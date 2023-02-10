@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_menu">
 
     <fragment
         android:id="@+id/navigation_twibbon"
@@ -12,16 +12,16 @@
         tools:layout="@layout/fragment_twibbon" />
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.example.majikatubes1.ui.home.HomeFragment"
-        android:label="@string/title_menu"
-        tools:layout="@layout/fragment_home" />
-
-    <fragment
         android:id="@+id/navigation_cabang"
         android:name="com.example.majikatubes1.ui.cabang.CabangFragment"
         android:label="@string/title_cabang"
         tools:layout="@layout/fragment_cabang" />
+
+    <fragment
+        android:id="@+id/navigation_menu"
+        android:name="com.example.majikatubes1.ui.twibbon.TwibbonFragment"
+        android:label="@string/title_menu"
+        tools:layout="@layout/fragment_menu" />
 
     <fragment
         android:id="@+id/navigation_keranjang"

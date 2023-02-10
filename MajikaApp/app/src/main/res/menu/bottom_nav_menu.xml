@@ -12,7 +12,7 @@
         android:title="@string/title_cabang" />
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_menu"
         android:icon="@drawable/baseline_restaurant_24"
         android:title="@string/title_menu" />
 
