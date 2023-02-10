@@ -1,8 +1,9 @@
 package com.example.majikatubes1.ui.cabang
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.example.majikatubes1.data.cabang.CabangModel
 
 class CabangAdapter : RecyclerView.Adapter<CabangAdapter.CabangViewHolder>() {
     private var cabangList: List<CabangModel>? = null
+    private var context: Context? =  null
 
     inner class CabangViewHolder(cabangItem : View) : RecyclerView.ViewHolder(cabangItem) {
         val cabangItem = cabangItem.findViewById<CardView>(R.id.item_cabang)
@@ -32,6 +34,7 @@ class CabangAdapter : RecyclerView.Adapter<CabangAdapter.CabangViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CabangViewHolder {
         val layout = LayoutInflater.from(parent.context).inflate(R.layout.item_cabang, parent, false)
+        context = parent.context;
 
         return CabangViewHolder(layout)
     }
@@ -43,10 +46,14 @@ class CabangAdapter : RecyclerView.Adapter<CabangAdapter.CabangViewHolder>() {
         holder.cabangAlamat.text = cabangData.address
         holder.cabangTelp.text = cabangData.phone_number
 
-        holder.cabangMaps.setOnClickListener{
-            TODO("Add intent implementation for google maps")
-//
+        holder.cabangMaps.setOnClickListener {
+            val gmmIntentUri = Uri.parse("geo:${cabangData.latitude},${cabangData.longitude}?q=")
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            val bundle = Bundle()
+            startActivity(context!!, mapIntent, bundle)
         }
+
     }
 
     override fun getItemCount(): Int {
