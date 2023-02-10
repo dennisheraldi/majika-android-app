@@ -29,7 +29,7 @@ class CabangAdapter : RecyclerView.Adapter<CabangAdapter.CabangViewHolder>() {
     }
 
     fun setCabangList(data: List<CabangModel>){
-        cabangList = data
+        cabangList = data.sortedBy { it.name.toString() }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CabangViewHolder {
