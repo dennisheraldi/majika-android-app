@@ -36,7 +36,7 @@ class CabangFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentCabangBinding.inflate(inflater, container, false)
         _cabangAdapter = CabangAdapter()
 

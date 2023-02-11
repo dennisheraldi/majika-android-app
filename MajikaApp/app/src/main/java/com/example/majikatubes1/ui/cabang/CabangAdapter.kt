@@ -47,7 +47,7 @@ class CabangAdapter : RecyclerView.Adapter<CabangAdapter.CabangViewHolder>() {
         holder.cabangTelp.text = cabangData.phone_number
 
         holder.cabangMaps.setOnClickListener {
-            val gmmIntentUri = Uri.parse("geo:${cabangData.latitude},${cabangData.longitude}?q=")
+            val gmmIntentUri = Uri.parse("https://maps.google.com/?q=${cabangData.latitude},${cabangData.longitude}")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
             val bundle = Bundle()

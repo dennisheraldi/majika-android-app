@@ -2,31 +2,101 @@ package com.example.majikatubes1.ui.menu
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
+import android.util.LogPrinter
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.majikatubes1.R
+import com.example.majikatubes1.data.menu.MenuModel
+import com.example.majikatubes1.databinding.FragmentMenuBinding
+import java.util.*
 
 class MenuFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = MenuFragment()
-    }
+    private var _binding : FragmentMenuBinding? = null
+    private var _menuAdapter : MenuAdapter? = null
 
-    private lateinit var viewModel: MenuViewModel
+    private val binding get() = _binding!!
+    private val menuAdapter get() = _menuAdapter!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_menu, container, false)
+    ): View {
+        _binding = FragmentMenuBinding.inflate(inflater, container, false)
+        _menuAdapter = MenuAdapter()
+
+        val menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
+        val root: View = binding.root
+
+        val recyclerView: RecyclerView = binding.recyclerListMenu!!
+        val searchView: SearchView = binding.fragmentMenuSearch!!
+
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        recyclerView.adapter = menuAdapter
+
+        menuViewModel.getMenu()
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                menuViewModel.menu.observe(viewLifecycleOwner){
+                    if (it!=null){
+                        val data: List<MenuModel> = it.toList()
+                        val filteredData = filterData(data, newText)
+                        menuAdapter.setMenuList(filteredData)
+                        menuAdapter.notifyDataSetChanged()
+                    }
+                }
+                return true
+            }
+
+        })
+
+        menuViewModel.menu.observe(viewLifecycleOwner){
+            if (it!=null){
+                val data: List<MenuModel> = it.toList()
+                menuAdapter.setMenuList(data)
+                menuAdapter.notifyDataSetChanged()
+            }
+        }
+        // Inflate the layout for this fragment
+        return root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MenuViewModel::class.java)
-        // TODO: Use the ViewModel
+    fun filterData(data: List<MenuModel>, query : String?) : List<MenuModel>{
+        val filteredData = ArrayList<MenuModel>()
+        if (query != null){
+            for (i in data){
+               if (i.name.lowercase(Locale.ROOT).contains(query)){
+                   filteredData.add(i)
+               }
+            }
+            if (filteredData.isEmpty()){
+                Toast.makeText(this.context, "Makanan atau minuman tidak ditemukan", Toast.LENGTH_SHORT).show()
+            } else {
+                return filteredData.toList()
+            }
+        }
+        return data
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

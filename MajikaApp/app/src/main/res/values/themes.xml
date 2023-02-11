@@ -6,7 +6,7 @@
         <item name="colorPrimaryVariant">@color/brick_darker</item>
         <item name="colorOnPrimary">@color/brick</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/serenade</item>
+        <item name="colorSecondary">@color/brick</item>
         <item name="colorSecondaryVariant">@color/givry</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->

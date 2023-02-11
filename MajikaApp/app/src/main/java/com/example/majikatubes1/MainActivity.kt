@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_twibbon, R.id.navigation_menu, R.id.navigation_cabang, R.id.navigation_keranjang
             )
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
