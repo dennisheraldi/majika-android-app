@@ -5,6 +5,8 @@ import android.content.Context
 import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
@@ -57,7 +59,8 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
         holder.menuTerjual.text = "Terjual ${menuData.sold}"
         holder.menuDeskripsi.text = menuData.description
         holder.menuTambah.setOnClickListener{
-
+            holder.menuPlusMinusLayout.visibility = VISIBLE
+            holder.menuTambah.visibility = GONE
         }
     }
 

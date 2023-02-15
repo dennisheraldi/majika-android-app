@@ -13,5 +13,5 @@ data class KeranjangEntity (
     @ColumnInfo(name = "price") val price: Int,
     @ColumnInfo(name = "sold") val sold: Int,
     @ColumnInfo(name = "type") val type: String,
-    @ColumnInfo(name= " quantity") val quantity: Int? = 0
+    @ColumnInfo(name= "quantity") val quantity: Int? = 1
     )
