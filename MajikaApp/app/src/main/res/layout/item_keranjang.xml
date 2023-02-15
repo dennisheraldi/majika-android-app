@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_menu"
+    android:id="@+id/item_keranjang"
     style="bold"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -18,12 +18,12 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/item_menu_nama"
+            android:id="@+id/item_keranjang_nama"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:text="Makanan A"
             android:textColor="@color/serenade"
             android:textSize="20sp"
@@ -33,93 +33,74 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/item_menu_harga"
+            android:id="@+id/item_keranjang_harga"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:text="Rp 50.0000"
             android:textColor="@color/serenade"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_menu_nama" />
+            app:layout_constraintTop_toBottomOf="@+id/item_keranjang_nama" />
 
-        <TextView
-            android:id="@+id/item_menu_terjual"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:text="10RB+ Terjual"
-            android:textColor="@color/serenade"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_menu_harga" />
-
-        <TextView
-            android:id="@+id/item_menu_deskripsi"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:text="Makanan ini adalah makanan yang enak"
-            android:textColor="@color/serenade"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_menu_terjual" />
-
-        <Button
-            android:id="@+id/item_menu_tambah"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            android:backgroundTint="@color/serenade"
-            android:text="Tambah"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_menu_deskripsi" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/item_menu_plus_minus"
+
+
+            android:id="@+id/item_keranjang_plus_minus"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/item_menu_deskripsi">
+            app:layout_constraintTop_toBottomOf="@+id/item_keranjang_harga">
 
-            <Button
-                android:id="@+id/item_menu_button_plus"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/item_keranjang_jumlah"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/serenade"
-                android:text="+"
-                android:textSize="20sp"
+                android:layout_marginStart="16dp"
+                android:text="Jumlah"
+                android:textColor="@color/serenade"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-            <TextView
-                android:id="@+id/item_menu_counter"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/item_keranjang_button_plus"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:text="1"
-                android:textColor="@color/serenade"
+                android:layout_marginStart="150dp"
+                android:backgroundTint="@color/serenade"
+                android:text="+"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/item_menu_button_minus"
-                app:layout_constraintStart_toEndOf="@+id/item_menu_button_plus"
+                app:layout_constraintStart_toEndOf="@+id/item_keranjang_jumlah"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/item_keranjang_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:text="100"
+                android:textColor="@color/serenade"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/item_keranjang_button_minus"
+                app:layout_constraintStart_toEndOf="@+id/item_keranjang_button_plus"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/item_menu_button_minus"
-                android:layout_width="wrap_content"
+                android:id="@+id/item_keranjang_button_minus"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
                 android:backgroundTint="@color/serenade"
                 android:text="-"
                 android:textSize="20sp"

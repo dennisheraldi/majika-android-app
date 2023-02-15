@@ -6,8 +6,11 @@ import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.majikatubes1.R
 import com.example.majikatubes1.data.menu.MenuModel
@@ -23,10 +26,19 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
         val menuDeskripsi = menuItem.findViewById<TextView>(R.id.item_menu_deskripsi)
         val menuHarga = menuItem.findViewById<TextView>(R.id.item_menu_harga)
         val menuTerjual = menuItem.findViewById<TextView>(R.id.item_menu_terjual)
+        val menuTambah = menuItem.findViewById<Button>(R.id.item_menu_tambah)
+        val menuPlus = menuItem.findViewById<Button>(R.id.item_menu_button_plus)
+        val menuCounter = menuItem.findViewById<TextView>(R.id.item_menu_counter)
+        val menuMinus = menuItem.findViewById<Button>(R.id.item_menu_button_minus)
+        val menuPlusMinusLayout = menuItem.findViewById<ConstraintLayout>(R.id.item_menu_plus_minus)
     }
 
     fun setMenuList(data: List<MenuModel>){
         menuList = data.sortedBy { it.name.toString() }
+    }
+
+    fun getContext(): Context{
+        return context!!
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
@@ -44,6 +56,9 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
         holder.menuHarga.text = "Rp ${menuData.price}"
         holder.menuTerjual.text = "Terjual ${menuData.sold}"
         holder.menuDeskripsi.text = menuData.description
+        holder.menuTambah.setOnClickListener{
+
+        }
     }
 
     override fun getItemCount(): Int {

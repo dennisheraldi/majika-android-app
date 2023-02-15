@@ -1,5 +1,7 @@
 package com.example.majikatubes1.ui.menu
 
+import android.annotation.SuppressLint
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.majikatubes1.R
 import com.example.majikatubes1.data.menu.MenuModel
 import com.example.majikatubes1.databinding.FragmentMenuBinding
+import kotlinx.coroutines.NonDisposableHandle.parent
 import java.util.*
 
 class MenuFragment : Fragment() {
@@ -26,6 +29,7 @@ class MenuFragment : Fragment() {
     private val binding get() = _binding!!
     private val menuAdapter get() = _menuAdapter!!
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,6 +55,7 @@ class MenuFragment : Fragment() {
                 return false
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             override fun onQueryTextChange(newText: String?): Boolean {
                 menuViewModel.menu.observe(viewLifecycleOwner){
                     if (it!=null){
