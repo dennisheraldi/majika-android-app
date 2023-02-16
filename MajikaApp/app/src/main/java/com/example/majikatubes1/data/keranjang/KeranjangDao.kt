@@ -11,8 +11,8 @@ interface KeranjangDao {
     @Query("SELECT * from KeranjangEntity")
     fun getAll(): List<KeranjangEntity>
 
-    @Query("SELECT quantity from KeranjangEntity WHERE name like :name")
-    fun getQuantityByName(name: String): Int
+    @Query("SELECT * from KeranjangEntity WHERE name = :name")
+    fun getKeranjangInfo(name: String): KeranjangEntity
 
     @Insert
     fun insertKeranjang(vararg keranjang: KeranjangEntity)

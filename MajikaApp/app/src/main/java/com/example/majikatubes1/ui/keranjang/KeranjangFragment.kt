@@ -6,11 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.majikatubes1.R
+import com.example.majikatubes1.data.keranjang.KeranjangModel
 import com.example.majikatubes1.data.keranjang.KeranjangRepository
 import com.example.majikatubes1.databinding.FragmentKeranjangBinding
 
@@ -37,6 +39,7 @@ class KeranjangFragment : Fragment() {
         val root: View = binding.root
         val recyclerView: RecyclerView = binding.recyclerListKeranjang
         val totalBayar : TextView = binding.keranjangTotalPrice
+        val buttonBayar : Button = binding.keranjangButtonBayar
 
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         recyclerView.adapter = keranjangAdapter
@@ -44,6 +47,8 @@ class KeranjangFragment : Fragment() {
         keranjangViewModel.getKeranjang()
         keranjangViewModel.keranjangList.observe(viewLifecycleOwner) {
             if (it != null){
+                var total : Int = calculateTotalPrice(it)
+                totalBayar.text = "Rp${total.toString()}"
                 keranjangAdapter.setKeranjangList(it.toList())
                 keranjangAdapter.notifyDataSetChanged()
             }
@@ -55,5 +60,14 @@ class KeranjangFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun calculateTotalPrice(keranjangList : List<KeranjangModel>): Int {
+        var total : Int = 0
+        for (i in keranjangList){
+            val subTotal = i.price * i.quantity
+            total = total.plus(subTotal)
+        }
+        return total
     }
 }

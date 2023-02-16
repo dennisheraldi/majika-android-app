@@ -14,8 +14,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.majikatubes1.R
+import com.example.majikatubes1.data.keranjang.KeranjangEntity
 import com.example.majikatubes1.data.keranjang.KeranjangModel
 import com.example.majikatubes1.data.keranjang.KeranjangRepository
 import com.example.majikatubes1.data.menu.MenuModel
@@ -59,13 +61,51 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
         val menuData: MenuModel = menuList!![position]
 
-
         holder.menuNama.text = menuData.name
-        holder.menuHarga.text = "Rp ${menuData.price}"
+        holder.menuHarga.text = "Rp${menuData.price}"
         holder.menuTerjual.text = "Terjual ${menuData.sold}"
         holder.menuDeskripsi.text = menuData.description
-        holder.menuTambah.setOnClickListener{
-            keranjangRepository?.insertKeranjang(KeranjangModel(menuData.name, menuData.price, 1))
+
+        var keranjangData : KeranjangModel? = keranjangRepository?.getAllKeranjang()?.value?.find { it.name == menuData.name }
+
+        keranjangData?.let {
+            holder.menuTambah.visibility = GONE
+            holder.menuPlusMinusLayout.visibility = VISIBLE
+
+            holder.menuCounter.text = keranjangData!!.quantity.toString()
+
+            holder.menuPlus.setOnClickListener {
+                keranjangData = keranjangRepository?.getAllKeranjang()?.value?.find { it.name == menuData.name }
+                keranjangData?.quantity = keranjangData?.quantity?.plus(1)!!
+                holder.menuCounter.text = keranjangData!!.quantity.toString()
+                keranjangRepository?.updateKeranjang(keranjangData!!)
+                notifyDataSetChanged()
+            }
+
+            holder.menuMinus.setOnClickListener {
+                keranjangData  = keranjangRepository?.getAllKeranjang()?.value?.find { it.name == menuData.name }
+                keranjangData?.quantity = keranjangData?.quantity?.minus(1)!!
+                if (keranjangData?.quantity == 0){
+                    keranjangRepository?.deleteKeranjang(keranjangData!!)
+                    holder.menuTambah.visibility = VISIBLE
+                    holder.menuPlusMinusLayout.visibility = GONE
+                } else {
+                    holder.menuCounter.text = keranjangData!!.quantity.toString()
+                    keranjangRepository?.updateKeranjang(keranjangData!!)
+                }
+                notifyDataSetChanged()
+            }
+
+        } ?: run{
+            holder.menuTambah.visibility = VISIBLE
+            holder.menuPlusMinusLayout.visibility = GONE
+
+            holder.menuTambah.setOnClickListener {
+                keranjangRepository?.insertKeranjang(KeranjangModel(menuData.name, menuData.price, 1))
+                holder.menuTambah.visibility = GONE
+                holder.menuPlusMinusLayout.visibility = VISIBLE
+                notifyDataSetChanged();
+            }
         }
     }
 

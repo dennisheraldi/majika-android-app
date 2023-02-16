@@ -29,8 +29,10 @@ class KeranjangAdapter: RecyclerView.Adapter<KeranjangAdapter.KeranjangViewHolde
         val keranjangMinus = keranjangItem.findViewById<Button>(R.id.item_keranjang_button_minus)
     }
 
-    fun setKeranjangList(data: List<KeranjangModel>){
-        keranjangList = data.sortedBy { it.name.toString() }
+    fun setKeranjangList(data: List<KeranjangModel>?){
+        if (data != null) {
+            keranjangList = data.sortedBy { it.name.toString() }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeranjangViewHolder {
@@ -46,16 +48,33 @@ class KeranjangAdapter: RecyclerView.Adapter<KeranjangAdapter.KeranjangViewHolde
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: KeranjangViewHolder, position: Int) {
-        // Todo
         val keranjangData: KeranjangModel = keranjangList!![position]
 
         holder.keranjangNama.text = keranjangData.name
-        holder.keranjangHarga.text = "Rp ${keranjangData.price.toString()}"
+        holder.keranjangHarga.text = "Rp${keranjangData.price.toString()}"
+        holder.keranjangCounter.text = keranjangData.quantity.toString()
 
-        holder.keranjangMinus.setOnClickListener{
+        holder.keranjangCounter.text = keranjangData.quantity.toString()
 
+        holder.keranjangPlus.setOnClickListener{
+            keranjangData.quantity = keranjangData.quantity.plus(1)
+            holder.keranjangCounter.text = keranjangData.quantity.toString()
+            keranjangRepository?.updateKeranjang(keranjangData)
+            notifyDataSetChanged()
         }
 
+        holder.keranjangMinus.setOnClickListener{
+            keranjangData.quantity = keranjangData.quantity.minus(1)
+            if (keranjangData.quantity == 0){
+                keranjangRepository?.deleteKeranjang(keranjangData)
+                setKeranjangList(keranjangRepository?.getAllKeranjang()?.value)
+                notifyDataSetChanged()
+            } else {
+                holder.keranjangCounter.text = keranjangData.quantity.toString()
+                keranjangRepository?.updateKeranjang(keranjangData)
+            }
+            notifyDataSetChanged()
+        }
 
     }
 

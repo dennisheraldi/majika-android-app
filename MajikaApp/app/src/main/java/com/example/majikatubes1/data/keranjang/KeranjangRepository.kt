@@ -55,5 +55,10 @@ class KeranjangRepository(context: Context) {
         keranjangDao.updateKeranjang(convertToKeranjangEntity(keranjangModel))
     }
 
+    fun getKeranjang(name: String) : KeranjangModel{
+        val keranjangDao: KeranjangDao = db.keranjangDao()
+        val keranjang : KeranjangEntity = keranjangDao.getKeranjangInfo(name)
+        return convertToKeranjangModel(keranjang)
+    }
 
 }
