@@ -11,16 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.majikatubes1.R
 import com.example.majikatubes1.databinding.FragmentCabangBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "_binding"
-private const val ARG_PARAM2 = "_cabangAdapter"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CabangFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CabangFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var _binding: FragmentCabangBinding? = null
@@ -30,7 +21,6 @@ class CabangFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private val cabangAdapter get() = _cabangAdapter!!
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

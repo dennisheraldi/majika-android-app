@@ -13,8 +13,11 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.example.majikatubes1.R
+import com.example.majikatubes1.data.keranjang.KeranjangModel
+import com.example.majikatubes1.data.keranjang.KeranjangRepository
 import com.example.majikatubes1.data.menu.MenuModel
 import org.w3c.dom.Text
 import java.util.*
@@ -22,6 +25,7 @@ import java.util.*
 class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
     private var menuList: List<MenuModel>? = null
     private var context: Context? = null
+    private var keranjangRepository: KeranjangRepository? = null
 
     inner class MenuViewHolder(menuItem: View): RecyclerView.ViewHolder(menuItem){
         val menuNama = menuItem.findViewById<TextView>(R.id.item_menu_nama)
@@ -46,6 +50,7 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuViewHolder {
         val layout = LayoutInflater.from(parent.context).inflate(R.layout.item_menu, parent, false)
         context = parent.context
+        keranjangRepository = KeranjangRepository(context!!)
 
         return MenuViewHolder(layout)
     }
@@ -54,13 +59,13 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
         val menuData: MenuModel = menuList!![position]
 
+
         holder.menuNama.text = menuData.name
         holder.menuHarga.text = "Rp ${menuData.price}"
         holder.menuTerjual.text = "Terjual ${menuData.sold}"
         holder.menuDeskripsi.text = menuData.description
         holder.menuTambah.setOnClickListener{
-            holder.menuPlusMinusLayout.visibility = VISIBLE
-            holder.menuTambah.visibility = GONE
+            keranjangRepository?.insertKeranjang(KeranjangModel(menuData.name, menuData.price, 1))
         }
     }
 

@@ -12,53 +12,47 @@ class KeranjangRepository(context: Context) {
         "Keranjang"
     ).fallbackToDestructiveMigration().allowMainThreadQueries().build()
 
-    fun convertMenuToKeranjang(menuModel: MenuModel ) : KeranjangEntity {
+    fun convertToKeranjangEntity(keranjangModel: KeranjangModel ) : KeranjangEntity {
         return KeranjangEntity(
-            name = menuModel.name,
-            description = menuModel.description,
-            currency = menuModel.currency,
-            price = menuModel.price,
-            sold = menuModel.sold,
-            type = menuModel.type
+            name = keranjangModel.name,
+            price = keranjangModel.price,
+            quantity = keranjangModel.quantity
         )
     }
 
-    fun convertKeranjangToMenu(keranjangEntity: KeranjangEntity) : MenuModel {
-        return MenuModel(
-            name = keranjangEntity.name.toString(),
-            description = keranjangEntity.description.toString(),
-            currency = keranjangEntity.currency.toString(),
+    fun convertToKeranjangModel(keranjangEntity: KeranjangEntity) : KeranjangModel {
+        return KeranjangModel(
+            name = keranjangEntity.name,
             price = keranjangEntity.price,
-            sold = keranjangEntity.sold,
-            type = keranjangEntity.type
+            quantity = keranjangEntity.quantity!!
         )
     }
 
-    fun getAllKeranjang() : MutableLiveData<List<MenuModel>> {
+    fun getAllKeranjang() : MutableLiveData<List<KeranjangModel>> {
         val keranjangDao : KeranjangDao = db.keranjangDao()
-        val result = MutableLiveData<List<MenuModel>>()
+        val result = MutableLiveData<List<KeranjangModel>>()
 
-        result.value = keranjangDao.getAll().map { keranjangEntity -> convertKeranjangToMenu(keranjangEntity) }
+        result.value = keranjangDao.getAll().map { keranjangEntity -> convertToKeranjangModel(keranjangEntity) }
 
         return result
     }
 
-    fun insertKeranjang(menuModel : MenuModel) {
+    fun insertKeranjang(keranjangModel: KeranjangModel) {
         val keranjangDao: KeranjangDao = db.keranjangDao()
 
-        keranjangDao.insertKeranjang(convertMenuToKeranjang(menuModel))
+        keranjangDao.insertKeranjang(convertToKeranjangEntity(keranjangModel))
     }
 
-    fun deleteKeranjang(menuModel : MenuModel){
+    fun deleteKeranjang(keranjangModel: KeranjangModel){
         val keranjangDao: KeranjangDao = db.keranjangDao()
 
-        keranjangDao.deleteKeranjang(convertMenuToKeranjang(menuModel))
+        keranjangDao.deleteKeranjang(convertToKeranjangEntity(keranjangModel))
     }
 
-    fun updateKeranjang(menuModel : MenuModel){
+    fun updateKeranjang(keranjangModel: KeranjangModel){
         val keranjangDao: KeranjangDao = db.keranjangDao()
 
-        keranjangDao.updateKeranjang(convertMenuToKeranjang(menuModel))
+        keranjangDao.updateKeranjang(convertToKeranjangEntity(keranjangModel))
     }
 
 

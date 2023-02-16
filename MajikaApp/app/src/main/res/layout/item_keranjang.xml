@@ -70,15 +70,15 @@
 
 
             <Button
-                android:id="@+id/item_keranjang_button_plus"
+                android:id="@+id/item_keranjang_button_minus"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="150dp"
+                android:layout_marginEnd="16dp"
                 android:backgroundTint="@color/serenade"
-                android:text="+"
+                android:text="-"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/item_keranjang_jumlah"
+                app:layout_constraintEnd_toStartOf="@+id/item_keranjang_counter"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
 
@@ -86,23 +86,21 @@
                 android:id="@+id/item_keranjang_counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:text="100"
+                android:layout_marginEnd="16dp"
+                android:text="1"
                 android:textColor="@color/serenade"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/item_keranjang_button_minus"
-                app:layout_constraintStart_toEndOf="@+id/item_keranjang_button_plus"
+                app:layout_constraintEnd_toStartOf="@+id/item_keranjang_button_plus"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/item_keranjang_button_minus"
+                android:id="@+id/item_keranjang_button_plus"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:backgroundTint="@color/serenade"
-                android:text="-"
+                android:text="+"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
