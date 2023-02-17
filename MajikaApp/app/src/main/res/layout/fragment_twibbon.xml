@@ -5,10 +5,37 @@
     android:layout_height="match_parent"
     tools:context=".ui.twibbon.TwibbonFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+    <FrameLayout
+        android:layout_marginTop="80dp"
+        android:layout_width="380dp"
+        android:layout_height="380dp"
+        android:layout_gravity="center_horizontal">
+
+        <androidx.camera.view.PreviewView
+            android:id="@+id/viewFinder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+        <ImageView
+            android:id="@+id/twibbon_imageview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/twibbon_frame" />
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/image_capture_button"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/circle_button_background"
+        android:drawable="@drawable/baseline_camera_alt_24"
+        android:drawableTint="@color/givry"
+        android:drawablePadding="20dp"
+        android:padding="0dp" />
 
 </FrameLayout>
