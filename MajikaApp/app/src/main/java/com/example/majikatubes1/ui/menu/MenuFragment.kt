@@ -2,6 +2,10 @@ package com.example.majikatubes1.ui.menu
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,11 +26,13 @@ import com.example.majikatubes1.databinding.FragmentMenuBinding
 import kotlinx.coroutines.NonDisposableHandle.parent
 import java.util.*
 
-class MenuFragment : Fragment() {
+class MenuFragment : Fragment(), SensorEventListener {
 
     private var _binding : FragmentMenuBinding? = null
     private var _menuAdapter : MenuAdapter? = null
     private var _menuItemSectionDecoration : MenuItemSectionDecoration? = null
+    private lateinit var sensorManager: SensorManager
+    private var temperature: Float = 0.0f
 
     private val binding get() = _binding!!
     private val menuAdapter get() = _menuAdapter!!
@@ -39,7 +46,7 @@ class MenuFragment : Fragment() {
     ): View {
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
         _menuAdapter = MenuAdapter()
-
+//        sensorManager = getSystemService(activity.SENSOR_SERVICE) as SensorManager
 
         val menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
         val root: View = binding.root
@@ -113,6 +120,13 @@ class MenuFragment : Fragment() {
         _binding = null
     }
 
+    override fun onSensorChanged(event: SensorEvent?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        TODO("Not yet implemented")
+    }
 
 
 }
