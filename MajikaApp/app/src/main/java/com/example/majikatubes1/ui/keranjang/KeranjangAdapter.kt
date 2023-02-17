@@ -15,10 +15,14 @@ import com.example.majikatubes1.data.keranjang.KeranjangModel
 import com.example.majikatubes1.data.keranjang.KeranjangRepository
 import org.w3c.dom.Text
 
-class KeranjangAdapter: RecyclerView.Adapter<KeranjangAdapter.KeranjangViewHolder>() {
+class KeranjangAdapter(private val cartupdatecallback: cartUpdateCallback): RecyclerView.Adapter<KeranjangAdapter.KeranjangViewHolder>() {
     private var keranjangList: List<KeranjangModel>? = null
     private var context: Context? = null
     private var keranjangRepository: KeranjangRepository? = null
+
+    interface cartUpdateCallback{
+        fun updateTotalTextView()
+    }
 
     class KeranjangViewHolder(keranjangItem : View): RecyclerView.ViewHolder(keranjangItem){
         val keranjangItem = keranjangItem.findViewById<CardView>(R.id.item_keranjang)
@@ -33,6 +37,10 @@ class KeranjangAdapter: RecyclerView.Adapter<KeranjangAdapter.KeranjangViewHolde
         if (data != null) {
             keranjangList = data.sortedBy { it.name.toString() }
         }
+    }
+
+    fun getKeranjangList(): List<KeranjangModel>? {
+        return keranjangList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeranjangViewHolder {
@@ -60,6 +68,8 @@ class KeranjangAdapter: RecyclerView.Adapter<KeranjangAdapter.KeranjangViewHolde
             keranjangData.quantity = keranjangData.quantity.plus(1)
             holder.keranjangCounter.text = keranjangData.quantity.toString()
             keranjangRepository?.updateKeranjang(keranjangData)
+            setKeranjangList(keranjangRepository?.getAllKeranjang()?.value)
+            cartupdatecallback.updateTotalTextView()
             notifyDataSetChanged()
         }
 
@@ -68,14 +78,16 @@ class KeranjangAdapter: RecyclerView.Adapter<KeranjangAdapter.KeranjangViewHolde
             if (keranjangData.quantity == 0){
                 keranjangRepository?.deleteKeranjang(keranjangData)
                 setKeranjangList(keranjangRepository?.getAllKeranjang()?.value)
+                cartupdatecallback.updateTotalTextView()
                 notifyDataSetChanged()
             } else {
                 holder.keranjangCounter.text = keranjangData.quantity.toString()
                 keranjangRepository?.updateKeranjang(keranjangData)
+                cartupdatecallback.updateTotalTextView()
             }
             notifyDataSetChanged()
         }
-
+        setKeranjangList(keranjangRepository?.getAllKeranjang()?.value)
     }
 
 

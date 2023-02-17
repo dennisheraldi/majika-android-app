@@ -45,6 +45,10 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
         menuList = data.sortedBy { it.name.toString() }
     }
 
+    fun getMenuList() : List<MenuModel>? {
+        return menuList
+    }
+
     fun getContext(): Context{
         return context!!
     }

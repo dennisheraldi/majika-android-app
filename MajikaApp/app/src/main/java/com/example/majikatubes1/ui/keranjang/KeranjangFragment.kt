@@ -1,6 +1,9 @@
 package com.example.majikatubes1.ui.keranjang
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,15 +19,24 @@ import com.example.majikatubes1.R
 import com.example.majikatubes1.data.keranjang.KeranjangModel
 import com.example.majikatubes1.data.keranjang.KeranjangRepository
 import com.example.majikatubes1.databinding.FragmentKeranjangBinding
+import java.util.*
 
 
-class KeranjangFragment : Fragment() {
+class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
     // TODO: Rename and change types of parameters
     private var _binding: FragmentKeranjangBinding? = null
     private var _keranjangAdapter: KeranjangAdapter? = null
 
     private val binding get() = _binding!!
     private val keranjangAdapter get() = _keranjangAdapter!!
+
+
+    override fun updateTotalTextView(){
+        val totalBayar : TextView = binding.keranjangTotalPrice
+        totalBayar.text = keranjangAdapter.getKeranjangList()?.let {
+            calculateTotalPrice(it)
+        }.toString()
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -33,7 +46,18 @@ class KeranjangFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentKeranjangBinding.inflate(inflater, container, false)
-        _keranjangAdapter = KeranjangAdapter()
+        _keranjangAdapter = KeranjangAdapter(object : KeranjangAdapter.cartUpdateCallback{
+            @SuppressLint("SetTextI18n")
+            override fun updateTotalTextView() {
+                val totalBayar : TextView = binding.keranjangTotalPrice
+                totalBayar.text = "Rp${
+                    keranjangAdapter.getKeranjangList()?.let {
+                        calculateTotalPrice(it)
+                    }.toString()
+                }".format(Locale.GERMAN)
+
+            }
+        })
 
         val keranjangViewModel = KeranjangViewModel(KeranjangRepository(requireContext()))
         val root: View = binding.root
@@ -41,16 +65,17 @@ class KeranjangFragment : Fragment() {
         val totalBayar : TextView = binding.keranjangTotalPrice
         val buttonBayar : Button = binding.keranjangButtonBayar
 
+
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         recyclerView.adapter = keranjangAdapter
 
         keranjangViewModel.getKeranjang()
         keranjangViewModel.keranjangList.observe(viewLifecycleOwner) {
             if (it != null){
-                var total : Int = calculateTotalPrice(it)
-                totalBayar.text = "Rp${total.toString()}"
                 keranjangAdapter.setKeranjangList(it.toList())
                 keranjangAdapter.notifyDataSetChanged()
+                var total : Int = calculateTotalPrice(it)
+                totalBayar.text = "Rp${total.toString()}"
             }
         }
         // Inflate the layout for this fragment

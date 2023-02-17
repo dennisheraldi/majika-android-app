@@ -25,9 +25,11 @@ class MenuFragment : Fragment() {
 
     private var _binding : FragmentMenuBinding? = null
     private var _menuAdapter : MenuAdapter? = null
+    private var _menuItemSectionDecoration : MenuItemSectionDecoration? = null
 
     private val binding get() = _binding!!
     private val menuAdapter get() = _menuAdapter!!
+    private val menuItemSectionDecoration get() = _menuItemSectionDecoration!!
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -37,6 +39,7 @@ class MenuFragment : Fragment() {
     ): View {
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
         _menuAdapter = MenuAdapter()
+
 
         val menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
         val root: View = binding.root
@@ -63,6 +66,9 @@ class MenuFragment : Fragment() {
                         val filteredData = filterData(data, newText)
                         menuAdapter.setMenuList(filteredData)
                         menuAdapter.notifyDataSetChanged()
+                        _menuItemSectionDecoration = MenuItemSectionDecoration(requireContext(),
+                            menuAdapter.getMenuList() as MutableList<MenuModel>
+                        )
                     }
                 }
                 return true
@@ -75,6 +81,9 @@ class MenuFragment : Fragment() {
                 val data: List<MenuModel> = it.toList()
                 menuAdapter.setMenuList(data)
                 menuAdapter.notifyDataSetChanged()
+                _menuItemSectionDecoration = MenuItemSectionDecoration(requireContext(),
+                    menuAdapter.getMenuList() as MutableList<MenuModel>
+                )
             }
         }
         // Inflate the layout for this fragment
@@ -103,5 +112,7 @@ class MenuFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 
 }

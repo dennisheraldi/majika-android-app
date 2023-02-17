@@ -39,8 +39,13 @@ class MenuItemSectionDecoration(
 
         val layoutManager = parent.layoutManager
 
-        // allow linear layout manager
+        // just allow linear layout manager
         if (layoutManager !is LinearLayoutManager) {
+            return
+        }
+
+        // just allow vertical orientation
+        if (LinearLayoutManager.VERTICAL != layoutManager.orientation) {
             return
         }
 
@@ -50,9 +55,18 @@ class MenuItemSectionDecoration(
         }
 
         val position = parent.getChildAdapterPosition(view)
-        if (0== position){
+        if (0 == position){
             outRect.top = sectionItemHeight
             return
+        }
+
+        val currentModel = getItemList[position]
+        val previousModel = getItemList[position-1]
+
+        if (currentModel.type != previousModel.type) {
+            outRect.top = sectionItemHeight
+        } else {
+            outRect.top = dividerHeight
         }
 
     }
@@ -61,21 +75,54 @@ class MenuItemSectionDecoration(
         super.onDraw(c, parent, state)
 
         val childCount = parent.childCount
-        for (i in 0 until childCount){
+        for(i in 0 until childCount) {
+
             val childView: View = parent.getChildAt(i)
             val position: Int = parent.getChildAdapterPosition(childView)
             val itemModel = getItemList[position]
 
-            if ((0 == position)) {
+            if (getItemList.isNotEmpty() &&
+                (0 == position || itemModel.type != getItemList[position - 1].type)) {
+
                 val top = childView.top - sectionItemHeight
                 drawSectionView(c, itemModel.type, top)
             }
             else {
-                drawDivider(c,childView)
+                drawDivider(c, childView)
             }
+
         }
 
+    }
 
+    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        super.onDrawOver(c, parent, state)
+
+        val list = getItemList
+
+        if (list.isEmpty()) {
+            return
+        }
+
+        val childCount = parent.childCount
+        if (childCount == 0) {
+            return
+        }
+
+        val firstView = parent.getChildAt(0)
+
+        val position = parent.getChildAdapterPosition(firstView)
+        val text = list[position].type
+        val itemModel = list[position]
+
+        val condition = itemModel.type != list[position + 1].type
+
+        drawSectionView(c, text, if (firstView.bottom <= sectionItemHeight && condition) {
+            firstView.bottom - sectionItemHeight
+        }
+        else {
+            0
+        })
     }
 
     private fun drawDivider(canvas: Canvas, childView: View ){
@@ -107,6 +154,7 @@ class MenuItemSectionDecoration(
             View.MeasureSpec.makeMeasureSpec(sectionItemWidth, View.MeasureSpec.EXACTLY),
             View.MeasureSpec.makeMeasureSpec(sectionItemHeight, View.MeasureSpec.EXACTLY)
         )
+        viewGroup.layout(0, 0, sectionItemWidth, sectionItemHeight)
 
         val bitmap = Bitmap.createBitmap(viewGroup.width, viewGroup.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
