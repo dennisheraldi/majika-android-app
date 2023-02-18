@@ -1,9 +1,7 @@
 package com.example.majikatubes1.ui.keranjang
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.hardware.Sensor
-import android.hardware.SensorManager
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,11 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.majikatubes1.R
+import com.example.majikatubes1.PembayaranActivity
 import com.example.majikatubes1.data.keranjang.KeranjangModel
 import com.example.majikatubes1.data.keranjang.KeranjangRepository
 import com.example.majikatubes1.databinding.FragmentKeranjangBinding
@@ -65,7 +61,6 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
         val totalBayar : TextView = binding.keranjangTotalPrice
         val buttonBayar : Button = binding.keranjangButtonBayar
 
-
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         recyclerView.adapter = keranjangAdapter
 
@@ -77,6 +72,12 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
                 var total : Int = calculateTotalPrice(it)
                 totalBayar.text = "Rp${total.toString()}"
             }
+        }
+
+        buttonBayar.setOnClickListener {
+            val pembayaranActivityIntent = Intent(activity, PembayaranActivity::class.java)
+            pembayaranActivityIntent.putExtra("totalBayar", totalBayar.text);
+            activity?.startActivity(pembayaranActivityIntent);
         }
         // Inflate the layout for this fragment
         return root
