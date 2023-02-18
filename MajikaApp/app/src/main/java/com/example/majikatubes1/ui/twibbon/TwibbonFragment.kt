@@ -2,12 +2,14 @@ package com.example.majikatubes1.ui.twibbon
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
@@ -17,6 +19,10 @@ import androidx.fragment.app.Fragment
 import com.example.majikatubes1.databinding.FragmentTwibbonBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import androidx.camera.core.ImageProxy
+import androidx.camera.core.ImageCaptureException
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 
 
 class TwibbonFragment : Fragment() {
@@ -30,6 +36,11 @@ class TwibbonFragment : Fragment() {
     private var preview: Preview? = null
     private var isPreviewFrozen = false
 
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(
+            requireContext(), it) == PackageManager.PERMISSION_GRANTED
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,15 +49,78 @@ class TwibbonFragment : Fragment() {
         return binding.root
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (allPermissionsGranted()) {
+                startCamera()
+            } else {
+                Toast.makeText(requireContext(),
+                    "Permissions not granted by the user.",
+                    Toast.LENGTH_SHORT).show()
+                requireActivity().finish()
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         startCamera()
 
+        binding.photoResult.visibility = View.INVISIBLE
         binding.imageCaptureButton.setOnClickListener {
-            freezePreview()
+            if (!isPreviewFrozen){
+                isPreviewFrozen = true
+                takePhoto()
+                // unhide photoResult
+                binding.photoResult.visibility = View.VISIBLE
+            } else {
+                isPreviewFrozen = false
+                // hide photoResult
+                binding.photoResult.visibility = View.INVISIBLE
+            }
         }
+    }
+
+    private fun takePhoto() {
+        // Get a stable reference of the modifiable image capture use case
+        val imageCapture = imageCapture ?: return
+
+        // Set up image capture listener, which is triggered after photo has been taken
+        imageCapture.takePicture(ContextCompat.getMainExecutor(requireContext()), object :
+            ImageCapture.OnImageCapturedCallback() {
+            override fun onCaptureSuccess(image: ImageProxy) {
+                super.onCaptureSuccess(image)
+
+                val buffer = image.planes[0].buffer
+                val bytes = ByteArray(buffer.remaining())
+                buffer.get(bytes)
+                var bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, null)
+
+                // Rotate the bitmap by 90 degrees clockwise
+                val matrix = Matrix()
+                matrix.postRotate(90F)
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+                // Display it in an ImageView
+                requireActivity().runOnUiThread {
+                    binding.photoResult.setImageBitmap(bitmap)
+                }
+
+                // Close the image
+                image.close()
+            }
+
+            override fun onError(exc: ImageCaptureException) {
+                Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+            }
+        })
     }
 
     private fun startCamera() {
@@ -79,29 +153,6 @@ class TwibbonFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-    private fun freezePreview() {
-        if (!isPreviewFrozen) {
-            // Unbind the preview use case to freeze the camera preview
-            val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-            cameraProviderFuture.addListener({
-                val cameraProvider = cameraProviderFuture.get()
-                cameraProvider.unbind(preview)
-                isPreviewFrozen = true
-            }, ContextCompat.getMainExecutor(requireContext()))
-        } else {
-            // rebind the preview use case to resume the camera preview
-            val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-            cameraProviderFuture.addListener({
-                val cameraProvider = cameraProviderFuture.get()
-                cameraProvider.bindToLifecycle(
-                    viewLifecycleOwner,
-                    CameraSelector.DEFAULT_BACK_CAMERA,
-                    preview
-                )
-                isPreviewFrozen = false
-            }, ContextCompat.getMainExecutor(requireContext()))
-        }
-    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
