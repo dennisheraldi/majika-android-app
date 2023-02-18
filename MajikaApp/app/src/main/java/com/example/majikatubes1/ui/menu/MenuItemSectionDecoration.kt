@@ -12,14 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.majikatubes1.data.menu.MenuModel
 
 class MenuItemSectionDecoration(
-    private val context: Context,
-    private val getItemList: MutableList<MenuModel>
+    private val context: Context
 ) : RecyclerView.ItemDecoration() {
 
     private val dividerHeight = dipToPx(context, 0.8f)
     private val dividerPoint = Paint(Paint.ANTI_ALIAS_FLAG).also {
-        it.color = Color.parseColor("#ff0000")
+        it.color = Color.parseColor("#ffffff")
     }
+
+    private lateinit var menuList: MutableList<MenuModel>
 
     private val sectionItemWidth: Int by lazy {
         getScreenWidth(context)
@@ -27,6 +28,10 @@ class MenuItemSectionDecoration(
 
     private val sectionItemHeight: Int by lazy {
         dipToPx(context,30f)
+    }
+
+    fun setItemList(list: MutableList<MenuModel>) {
+        menuList = list
     }
 
     override fun getItemOffsets(
@@ -49,7 +54,7 @@ class MenuItemSectionDecoration(
             return
         }
 
-        val list = getItemList
+        val list = menuList
         if (list.isEmpty()){
             return
         }
@@ -60,8 +65,8 @@ class MenuItemSectionDecoration(
             return
         }
 
-        val currentModel = getItemList[position]
-        val previousModel = getItemList[position-1]
+        val currentModel = menuList[position]
+        val previousModel = menuList[position-1]
 
         if (currentModel.type != previousModel.type) {
             outRect.top = sectionItemHeight
@@ -79,10 +84,10 @@ class MenuItemSectionDecoration(
 
             val childView: View = parent.getChildAt(i)
             val position: Int = parent.getChildAdapterPosition(childView)
-            val itemModel = getItemList[position]
+            val itemModel = menuList[position]
 
-            if (getItemList.isNotEmpty() &&
-                (0 == position || itemModel.type != getItemList[position - 1].type)) {
+            if (menuList.isNotEmpty() &&
+                (0 == position || itemModel.type != menuList[position - 1].type)) {
 
                 val top = childView.top - sectionItemHeight
                 drawSectionView(c, itemModel.type, top)
@@ -98,7 +103,7 @@ class MenuItemSectionDecoration(
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
 
-        val list = getItemList
+        val list = menuList
 
         if (list.isEmpty()) {
             return

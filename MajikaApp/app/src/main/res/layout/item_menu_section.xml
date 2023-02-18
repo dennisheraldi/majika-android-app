@@ -7,10 +7,11 @@
         android:id="@+id/item_menu_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:paddingStart="16dp"
         android:text="Makanan"
         android:textColor="@color/black"
         android:textSize="20sp"
-        android:textStyle="bold"
-        />
+        android:textStyle="bold" />
 
 </FrameLayout>

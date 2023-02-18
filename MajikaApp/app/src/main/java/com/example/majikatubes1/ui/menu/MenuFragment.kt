@@ -46,6 +46,7 @@ class MenuFragment : Fragment(), SensorEventListener {
     ): View {
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
         _menuAdapter = MenuAdapter()
+        _menuItemSectionDecoration = MenuItemSectionDecoration(requireContext())
 //        sensorManager = getSystemService(activity.SENSOR_SERVICE) as SensorManager
 
         val menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
@@ -57,9 +58,9 @@ class MenuFragment : Fragment(), SensorEventListener {
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         recyclerView.adapter = menuAdapter
+        recyclerView.addItemDecoration(menuItemSectionDecoration)
 
         menuViewModel.getMenu()
-
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -69,13 +70,13 @@ class MenuFragment : Fragment(), SensorEventListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 menuViewModel.menu.observe(viewLifecycleOwner){
                     if (it!=null){
-                        val data: List<MenuModel> = it.toList()
+                        var data: List<MenuModel> = it.toList()
+                        data = sortData(data)
                         val filteredData = filterData(data, newText)
                         menuAdapter.setMenuList(filteredData)
                         menuAdapter.notifyDataSetChanged()
-                        _menuItemSectionDecoration = MenuItemSectionDecoration(requireContext(),
-                            menuAdapter.getMenuList() as MutableList<MenuModel>
-                        )
+                        menuItemSectionDecoration.setItemList(filteredData as MutableList<MenuModel>)
+
                     }
                 }
                 return true
@@ -85,12 +86,11 @@ class MenuFragment : Fragment(), SensorEventListener {
 
         menuViewModel.menu.observe(viewLifecycleOwner){
             if (it!=null){
-                val data: List<MenuModel> = it.toList()
+                var data: List<MenuModel> = it.toList()
+                data = sortData(data)
                 menuAdapter.setMenuList(data)
                 menuAdapter.notifyDataSetChanged()
-                _menuItemSectionDecoration = MenuItemSectionDecoration(requireContext(),
-                    menuAdapter.getMenuList() as MutableList<MenuModel>
-                )
+                menuItemSectionDecoration.setItemList(data as MutableList<MenuModel>)
             }
         }
         // Inflate the layout for this fragment
@@ -112,6 +112,10 @@ class MenuFragment : Fragment(), SensorEventListener {
             }
         }
         return data
+    }
+
+    fun sortData(data: List<MenuModel>): List<MenuModel>{
+        return data.sortedWith(compareByDescending<MenuModel> {it.type}.thenBy{it.name.toString()})
     }
 
 

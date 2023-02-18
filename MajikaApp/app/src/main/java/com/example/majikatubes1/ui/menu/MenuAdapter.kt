@@ -42,7 +42,7 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
     }
 
     fun setMenuList(data: List<MenuModel>){
-        menuList = data.sortedBy { it.name.toString() }
+        menuList = data
     }
 
     fun getMenuList() : List<MenuModel>? {
