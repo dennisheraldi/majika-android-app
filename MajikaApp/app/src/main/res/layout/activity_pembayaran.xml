@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PembayaranActivity">
+    tools:context=".ui.pembayaran.PembayaranActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ScannerCard"
@@ -90,7 +90,7 @@
             android:id="@+id/GambarStatusPembayaran"
             android:layout_width="85dp"
             android:layout_height="85dp"
-            android:layout_marginStart="56dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -119,6 +119,7 @@
             android:text="Sudah dibayar"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/GambarStatusPembayaran"
             app:layout_constraintTop_toBottomOf="@+id/StatusPembayaranText" />
     </androidx.constraintlayout.widget.ConstraintLayout>

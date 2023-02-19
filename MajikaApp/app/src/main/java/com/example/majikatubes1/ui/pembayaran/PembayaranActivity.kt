@@ -1,37 +1,36 @@
-package com.example.majikatubes1
+package com.example.majikatubes1.ui.pembayaran
 
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.example.majikatubes1.data.pembayaran.PembayaranRepository
+import com.example.majikatubes1.MainActivity
+import com.example.majikatubes1.R
+import com.example.majikatubes1.data.pembayaran.PembayaranStatus
 import com.example.majikatubes1.databinding.ActivityPembayaranBinding
-import kotlinx.android.synthetic.main.activity_pembayaran.*
+import com.example.majikatubes1.ui.keranjang.KeranjangFragment
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import com.google.zxing.Result
 import java.util.*
 import kotlin.concurrent.schedule
-import kotlin.concurrent.timerTask
 
 class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     private lateinit var binding: ActivityPembayaranBinding
     private var scannerViewer: ZXingScannerView? = null
-    private var pembayaranRepository: PembayaranRepository? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityPembayaranBinding.inflate(layoutInflater)
 
-        initView()
+        hideStatusPembayaran()
         initScannerViewer()
+        initView()
 
         setContentView(binding.root)
     }
@@ -40,26 +39,30 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         val totalBayarText  = binding.TotalBayarText
         val totalBayar      = intent.getStringExtra("totalBayar").toString()
         totalBayarText.text = "Total: $totalBayar"
-
-        this.hideStatusPembayaran()
     }
 
     private fun showStatusPembayaran(success: Boolean) {
+        val gambarStatusPembayaran  = binding.GambarStatusPembayaran
+        val statusPembayaranText    = binding.StatusPembayaranText
+        val statusPembayaranText1   = binding.StatusPembayaranText1
+        val statusPembayaran        = binding.StatusPembayaran
+
         if (success) {
-            binding.GambarStatusPembayaran.setBackgroundResource(R.drawable.ok)
-            binding.StatusPembayaranText.text           = "Berhasil"
-            binding.StatusPembayaranText1.text          = "Sudah dibayar"
+            gambarStatusPembayaran.setBackgroundResource(R.drawable.ok)
+            statusPembayaranText.text           = "Berhasil"
+            statusPembayaranText1.text          = "Sudah dibayar"
 
         } else {
-            binding.GambarStatusPembayaran.setBackgroundResource(R.drawable.cancel)
-            binding.StatusPembayaranText.text           = "Gagal"
-            binding.StatusPembayaranText1.text          = "Belum dibayar"
+            gambarStatusPembayaran.setBackgroundResource(R.drawable.cancel)
+            statusPembayaranText.text           = "Gagal"
+            statusPembayaranText1.text          = "Belum dibayar"
         }
-        binding.StatusPembayaran.visibility = View.VISIBLE;
+        statusPembayaran.visibility = View.VISIBLE;
     }
 
     private fun hideStatusPembayaran() {
-        binding.StatusPembayaran.visibility = View.GONE;
+        val statusPembayaran        = binding.StatusPembayaran
+        statusPembayaran.visibility = View.GONE;
     }
 
     private fun initScannerViewer() {
@@ -86,32 +89,39 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     }
 
      override fun handleResult (result: Result) {
-        Log.v(TAG, result.text)
         var transactionId = result.text
+        val pembayaranViewModel = PembayaranViewModel()
 
-        pembayaranRepository = PembayaranRepository()
+        pembayaranViewModel.getStatusPembayaran(transactionId)
+        pembayaranViewModel.statusPembayaran.observe(this,  androidx.lifecycle.Observer { result ->
+            var statusPembayaran = result.status
+            var sudahBayar       = statusPembayaran === PembayaranStatus.SUCCESS
 
-        var statusPembayaran = pembayaranRepository!!.getStatusPembayaran(transactionId)
-        var sudahBayar       = statusPembayaran.equals("SUCCESS")
+            var timer = Timer()
 
-        var timer = Timer()
-        Log.v(TAG, statusPembayaran.value.toString())
+            if (sudahBayar) {
+                scannerViewer!!.stopCamera()
+                showStatusPembayaran(sudahBayar)
 
-        if (sudahBayar) {
-            scannerViewer!!.stopCamera()
-            showStatusPembayaran(sudahBayar)
+                timer.schedule(5000) {
+                    moveToMainActivity()
+                }
 
-            timer.schedule(5000) {
-                moveToMainActivity()
+            } else {
+                showStatusPembayaran(sudahBayar)
+                scannerViewer?.resumeCameraPreview(this)
             }
-
-        } else {
-            showStatusPembayaran(sudahBayar)
-        }
+        })
     }
 
     private fun moveToMainActivity() {
-        var mainActivityIntent = Intent(this, MainActivity::class.java)
+        var mainActivityIntent  = Intent(this, MainActivity::class.java)
+        var keranjangFragment   = KeranjangFragment()
+        var bundleArgument      = Bundle()
+
+        bundleArgument.putString("statusPembayaran", PembayaranStatus.SUCCESS.toString())
+        keranjangFragment.arguments = bundleArgument
+        mainActivityIntent.putExtra("statusPembayaran", PembayaranStatus.SUCCESS)
         this.startActivity(mainActivityIntent)
     }
 

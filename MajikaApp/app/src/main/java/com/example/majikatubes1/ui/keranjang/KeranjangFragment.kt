@@ -3,6 +3,7 @@ package com.example.majikatubes1.ui.keranjang
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +12,10 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.majikatubes1.PembayaranActivity
+import com.example.majikatubes1.ui.pembayaran.PembayaranActivity
 import com.example.majikatubes1.data.keranjang.KeranjangModel
 import com.example.majikatubes1.data.keranjang.KeranjangRepository
+import com.example.majikatubes1.data.pembayaran.PembayaranStatus
 import com.example.majikatubes1.databinding.FragmentKeranjangBinding
 import java.util.*
 
@@ -79,6 +81,13 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
             pembayaranActivityIntent.putExtra("totalBayar", totalBayar.text);
             activity?.startActivity(pembayaranActivityIntent);
         }
+        // masih ngebug
+        val statusPembayaran = arguments?.getString("statusPembayaran")
+        Log.v("TAG", statusPembayaran.toString())
+        if (statusPembayaran?.equals(PembayaranStatus.SUCCESS) == true) {
+            keranjangAdapter.deleteAllKeranjang()
+        }
+
         // Inflate the layout for this fragment
         return root
     }
