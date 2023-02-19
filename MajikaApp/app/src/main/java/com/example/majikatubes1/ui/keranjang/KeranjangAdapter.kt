@@ -43,12 +43,6 @@ class KeranjangAdapter(private val cartupdatecallback: cartUpdateCallback): Recy
         return keranjangList
     }
 
-    fun deleteAllKeranjang() {
-        for (keranjang in keranjangList!!) {
-            keranjangRepository?.deleteKeranjang(keranjang)
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeranjangViewHolder {
         val layout = LayoutInflater.from(parent.context).inflate(R.layout.item_keranjang, parent, false)
         context = parent.context

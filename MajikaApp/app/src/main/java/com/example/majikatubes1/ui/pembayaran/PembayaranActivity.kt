@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Toast
 import com.example.majikatubes1.MainActivity
 import com.example.majikatubes1.R
+import com.example.majikatubes1.data.keranjang.KeranjangRepository
 import com.example.majikatubes1.data.pembayaran.PembayaranStatus
 import com.example.majikatubes1.databinding.ActivityPembayaranBinding
 import com.example.majikatubes1.ui.keranjang.KeranjangFragment
@@ -103,6 +104,9 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                 scannerViewer!!.stopCamera()
                 showStatusPembayaran(sudahBayar)
 
+                var keranjangRepository = KeranjangRepository(this)
+                keranjangRepository.deleteAllKeranjang()
+
                 timer.schedule(5000) {
                     moveToMainActivity()
                 }
@@ -116,12 +120,6 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     private fun moveToMainActivity() {
         var mainActivityIntent  = Intent(this, MainActivity::class.java)
-        var keranjangFragment   = KeranjangFragment()
-        var bundleArgument      = Bundle()
-
-        bundleArgument.putString("statusPembayaran", PembayaranStatus.SUCCESS.toString())
-        keranjangFragment.arguments = bundleArgument
-        mainActivityIntent.putExtra("statusPembayaran", PembayaranStatus.SUCCESS)
         this.startActivity(mainActivityIntent)
     }
 

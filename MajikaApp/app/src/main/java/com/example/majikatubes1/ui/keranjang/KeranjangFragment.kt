@@ -4,19 +4,20 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.majikatubes1.ui.pembayaran.PembayaranActivity
 import com.example.majikatubes1.data.keranjang.KeranjangModel
 import com.example.majikatubes1.data.keranjang.KeranjangRepository
 import com.example.majikatubes1.data.pembayaran.PembayaranStatus
 import com.example.majikatubes1.databinding.FragmentKeranjangBinding
+import com.example.majikatubes1.ui.pembayaran.PembayaranActivity
 import java.util.*
 
 
@@ -68,25 +69,30 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
 
         keranjangViewModel.getKeranjang()
         keranjangViewModel.keranjangList.observe(viewLifecycleOwner) {
+            var total : Int = 0
+
             if (it != null){
                 keranjangAdapter.setKeranjangList(it.toList())
                 keranjangAdapter.notifyDataSetChanged()
-                var total : Int = calculateTotalPrice(it)
-                totalBayar.text = "Rp${total.toString()}"
+                total           = calculateTotalPrice(it)
+                totalBayar.text = "Rp$total"
+            }
+
+            buttonBayar.setOnClickListener {
+                if (total > 0) {
+                    val pembayaranActivityIntent = Intent(activity, PembayaranActivity::class.java)
+                    pembayaranActivityIntent.putExtra("totalBayar", totalBayar.text)
+                    activity?.startActivity(pembayaranActivityIntent)
+                } else {
+                    Toast.makeText(requireContext(),
+                        "Keranjang is empty.",
+                        Toast.LENGTH_SHORT).show()
+                    requireActivity().finish()
+                }
             }
         }
 
-        buttonBayar.setOnClickListener {
-            val pembayaranActivityIntent = Intent(activity, PembayaranActivity::class.java)
-            pembayaranActivityIntent.putExtra("totalBayar", totalBayar.text);
-            activity?.startActivity(pembayaranActivityIntent);
-        }
-        // masih ngebug
-        val statusPembayaran = arguments?.getString("statusPembayaran")
-        Log.v("TAG", statusPembayaran.toString())
-        if (statusPembayaran?.equals(PembayaranStatus.SUCCESS) == true) {
-            keranjangAdapter.deleteAllKeranjang()
-        }
+
 
         // Inflate the layout for this fragment
         return root

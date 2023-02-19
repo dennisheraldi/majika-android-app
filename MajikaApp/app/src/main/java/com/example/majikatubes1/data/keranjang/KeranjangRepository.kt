@@ -1,6 +1,7 @@
 package com.example.majikatubes1.data.keranjang
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import com.example.majikatubes1.data.menu.MenuModel
@@ -47,6 +48,17 @@ class KeranjangRepository(context: Context) {
         val keranjangDao: KeranjangDao = db.keranjangDao()
 
         keranjangDao.deleteKeranjang(convertToKeranjangEntity(keranjangModel))
+    }
+
+    fun deleteAllKeranjang() {
+        val keranjangData = getAllKeranjang().value
+        if (keranjangData != null) {
+            for (keranjang in keranjangData) {
+                deleteKeranjang(keranjang)
+            }
+        } else {
+            Log.v("Tag", "null")
+        }
     }
 
     fun updateKeranjang(keranjangModel: KeranjangModel){
