@@ -23,7 +23,8 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.ImageCaptureException
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-
+import androidx.navigation.Navigation
+import com.example.majikatubes1.R
 
 class TwibbonFragment : Fragment() {
 
@@ -33,22 +34,15 @@ class TwibbonFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture? = null
 
-    private var preview: Preview? = null
     private var isPreviewFrozen = false
 
+    private var cameraProvider: ProcessCameraProvider? = null
+
+    // Camera permission
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentTwibbonBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -61,38 +55,57 @@ class TwibbonFragment : Fragment() {
                 Toast.makeText(requireContext(),
                     "Permissions not granted by the user.",
                     Toast.LENGTH_SHORT).show()
-                requireActivity().finish()
+                Navigation.findNavController(requireView()).navigateUp()
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentTwibbonBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cameraExecutor = Executors.newSingleThreadExecutor()
 
+        // Need to check first for permission before starting camera
+        // TO BE IMPLEMENTED
         startCamera()
 
         binding.photoResult.visibility = View.INVISIBLE
         binding.imageCaptureButton.setOnClickListener {
+
             if (!isPreviewFrozen){
                 isPreviewFrozen = true
                 takePhoto()
                 // unhide photoResult
                 binding.photoResult.visibility = View.VISIBLE
+                // pause preview
+                cameraProvider?.unbindAll()
+                binding.captureText.text = getString(R.string.take_again_button_text)
+
             } else {
+                // resume preview
+                startCamera()
                 isPreviewFrozen = false
                 // hide photoResult
                 binding.photoResult.visibility = View.INVISIBLE
+                binding.captureText.text = getString(R.string.capture_button_text)
+
             }
         }
     }
 
     private fun takePhoto() {
-        // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
-        // Set up image capture listener, which is triggered after photo has been taken
+        // Set up image capture listener, triggered after photo has been taken
         imageCapture.takePicture(ContextCompat.getMainExecutor(requireContext()), object :
             ImageCapture.OnImageCapturedCallback() {
             override fun onCaptureSuccess(image: ImageProxy) {
@@ -103,17 +116,17 @@ class TwibbonFragment : Fragment() {
                 buffer.get(bytes)
                 var bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size, null)
 
-                // Rotate the bitmap by 90 degrees clockwise
+                // Rotate bitmap 90 degrees clockwise
                 val matrix = Matrix()
                 matrix.postRotate(90F)
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
-                // Display it in an ImageView
+                // Display to ImageView
                 requireActivity().runOnUiThread {
                     binding.photoResult.setImageBitmap(bitmap)
                 }
 
-                // Close the image
+                // Close image
                 image.close()
             }
 
@@ -127,7 +140,7 @@ class TwibbonFragment : Fragment() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
         cameraProviderFuture.addListener({
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            cameraProvider = cameraProviderFuture.get()
 
             val preview = Preview.Builder()
                 .build()
@@ -140,11 +153,11 @@ class TwibbonFragment : Fragment() {
             imageCapture = imageCaptureBuilder
                 .build()
 
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
 
             try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
+                cameraProvider?.unbindAll()
+                cameraProvider?.bindToLifecycle(
                     viewLifecycleOwner, cameraSelector, preview, imageCapture
                 )
             } catch (exc: Exception) {
@@ -152,7 +165,6 @@ class TwibbonFragment : Fragment() {
             }
         }, ContextCompat.getMainExecutor(requireContext()))
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
