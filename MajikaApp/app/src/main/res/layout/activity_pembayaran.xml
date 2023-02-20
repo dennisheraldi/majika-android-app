@@ -7,84 +7,70 @@
     tools:context=".ui.pembayaran.PembayaranActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/ScannerCard"
-        android:layout_width="413dp"
-        android:layout_height="484dp"
-        android:layout_marginTop="30dp"
+        android:id="@+id/ScannerViewer"
+        android:layout_width="365dp"
+        android:layout_height="351dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="22dp"
+        android:background="#FFF4E7"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/ScanTitle">
 
-        <TextView
-            android:id="@+id/ScanTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="113dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="114dp"
-            android:text="Scan"
-            android:textAlignment="center"
-            android:textSize="28sp"
-            android:textStyle="bold"
+        <View
+            android:id="@+id/divider"
+            android:layout_width="367dp"
+            android:layout_height="4dp"
+            android:layout_marginTop="168dp"
+            android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.555"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ScannerViewer"
-            android:layout_width="367dp"
-            android:layout_height="351dp"
-            android:layout_marginStart="23dp"
-            android:layout_marginTop="22dp"
-            android:layout_marginEnd="23dp"
-            android:layout_marginBottom="22dp"
-            android:background="#FFF4E7"
-            app:layout_constraintBottom_toTopOf="@+id/TotalBayarText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ScanTitle">
-
-            <View
-                android:id="@+id/divider"
-                android:layout_width="367dp"
-                android:layout_height="4dp"
-                android:layout_marginTop="168dp"
-                android:background="?android:attr/listDivider"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:id="@+id/TotalBayarText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="128dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginEnd="127dp"
-            android:text="Total: Rp.0"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ScannerViewer" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/TotalBayarText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="118dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="118dp"
+        android:text="Total: Rp.1.000.000"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ScannerViewer" />
+
+    <TextView
+        android:id="@+id/ScanTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="174dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="174dp"
+        android:text="Scan"
+        android:textAlignment="center"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/StatusPembayaran"
         android:layout_width="286dp"
-        android:layout_height="102dp"
+        android:layout_height="103dp"
         android:layout_marginStart="60dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="60dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ScannerCard">
+        app:layout_constraintTop_toBottomOf="@+id/TotalBayarText">
 
         <ImageView
             android:id="@+id/GambarStatusPembayaran"
@@ -92,7 +78,7 @@
             android:layout_height="85dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="7dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -123,5 +109,20 @@
             app:layout_constraintStart_toEndOf="@+id/GambarStatusPembayaran"
             app:layout_constraintTop_toBottomOf="@+id/StatusPembayaranText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/countDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="135dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="134dp"
+        android:text="5 second(s) to main"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/StatusPembayaran" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
