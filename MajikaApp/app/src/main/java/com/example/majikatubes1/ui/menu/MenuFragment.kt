@@ -2,6 +2,7 @@ package com.example.majikatubes1.ui.menu
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Context.SENSOR_SERVICE
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -33,6 +34,7 @@ class MenuFragment : Fragment(), SensorEventListener {
     private var _menuItemSectionDecoration : MenuItemSectionDecoration? = null
     private lateinit var sensorManager: SensorManager
     private var temperature: Float = 0.0f
+    private var tempSensor: Sensor? = null
 
     private val binding get() = _binding!!
     private val menuAdapter get() = _menuAdapter!!
@@ -47,7 +49,13 @@ class MenuFragment : Fragment(), SensorEventListener {
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
         _menuAdapter = MenuAdapter()
         _menuItemSectionDecoration = MenuItemSectionDecoration(requireContext())
-//        sensorManager = getSystemService(activity.SENSOR_SERVICE) as SensorManager
+        sensorManager = activity?.getSystemService(SENSOR_SERVICE) as SensorManager
+        tempSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+
+        tempSensor ?: run {
+            // If the device has no temp sensor
+            Toast.makeText(this.context, "Sensor suhu saat ini tidak tersedia", Toast.LENGTH_SHORT).show()
+        }
 
         val menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
         val root: View = binding.root
@@ -125,12 +133,20 @@ class MenuFragment : Fragment(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        TODO("Not yet implemented")
+        binding.fragmentMenuSuhu.text = "Suhu saat ini ${event?.values?.get(0)} °C"
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        TODO("Not yet implemented")
+
     }
 
+    override fun onResume() {
+        super.onResume()
+        sensorManager.registerListener(this, tempSensor, SensorManager.SENSOR_DELAY_NORMAL)
+    }
 
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(this)
+    }
 }

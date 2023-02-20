@@ -20,7 +20,7 @@ class MenuItemSectionDecoration(
         it.color = Color.parseColor("#ffffff")
     }
 
-    private lateinit var menuList: MutableList<MenuModel>
+    private var menuList: MutableList<MenuModel>? = null
 
     private val sectionItemWidth: Int by lazy {
         getScreenWidth(context)
@@ -55,7 +55,7 @@ class MenuItemSectionDecoration(
         }
 
         val list = menuList
-        if (list.isEmpty()){
+        if (list!!.isEmpty()){
             return
         }
 
@@ -65,10 +65,10 @@ class MenuItemSectionDecoration(
             return
         }
 
-        val currentModel = menuList[position]
-        val previousModel = menuList[position-1]
+        val currentModel = menuList?.get(position)
+        val previousModel = menuList?.get(position-1)
 
-        if (currentModel.type != previousModel.type) {
+        if (currentModel!!.type != previousModel!!.type) {
             outRect.top = sectionItemHeight
         } else {
             outRect.top = dividerHeight
@@ -84,13 +84,14 @@ class MenuItemSectionDecoration(
 
             val childView: View = parent.getChildAt(i)
             val position: Int = parent.getChildAdapterPosition(childView)
-            val itemModel = menuList[position]
+            val itemModel = menuList?.get(position)
 
-            if (menuList.isNotEmpty() &&
-                (0 == position || itemModel.type != menuList[position - 1].type)) {
+
+            if (menuList!!.isNotEmpty() &&
+                (0 == position || itemModel!!.type != menuList!![position - 1].type)) {
 
                 val top = childView.top - sectionItemHeight
-                drawSectionView(c, itemModel.type, top)
+                drawSectionView(c, itemModel!!.type, top)
             }
             else {
                 drawDivider(c, childView)
@@ -102,10 +103,10 @@ class MenuItemSectionDecoration(
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
+        var list: MutableList<MenuModel>?
 
-        val list = menuList
-
-        if (list.isEmpty()) {
+        list = menuList
+        if (list == null) {
             return
         }
 
@@ -117,10 +118,14 @@ class MenuItemSectionDecoration(
         val firstView = parent.getChildAt(0)
 
         val position = parent.getChildAdapterPosition(firstView)
-        val text = list[position].type
-        val itemModel = list[position]
+        val text = list!![position].type
+        val itemModel = list!![position]
 
-        val condition = itemModel.type != list[position + 1].type
+        var condition = true
+
+        if (list!!.size != 1){
+            condition = itemModel.type != list!![position + 1].type
+        }
 
         drawSectionView(c, text, if (firstView.bottom <= sectionItemHeight && condition) {
             firstView.bottom - sectionItemHeight
