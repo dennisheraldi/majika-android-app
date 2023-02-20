@@ -21,6 +21,7 @@ import com.example.majikatubes1.data.keranjang.KeranjangEntity
 import com.example.majikatubes1.data.keranjang.KeranjangModel
 import com.example.majikatubes1.data.keranjang.KeranjangRepository
 import com.example.majikatubes1.data.menu.MenuModel
+import com.example.majikatubes1.utils.NumSperator
 import org.w3c.dom.Text
 import java.util.*
 
@@ -64,9 +65,10 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MenuViewHolder, position: Int) {
         val menuData: MenuModel = menuList!![position]
+        val numSperator         = NumSperator(menuData.price)
 
         holder.menuNama.text = menuData.name
-        holder.menuHarga.text = "Rp${menuData.price}"
+        holder.menuHarga.text = numSperator.parse()
         holder.menuTerjual.text = "Terjual ${menuData.sold}"
         holder.menuDeskripsi.text = menuData.description
 

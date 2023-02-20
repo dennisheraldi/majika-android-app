@@ -19,8 +19,10 @@ class PembayaranRepository {
                 call: Call<PembayaranResponse>,
                 response: Response<PembayaranResponse>
             ) {
-                var responseData    = PembayaranStatus.valueOf(response.body()?.status.toString())
-                result.value        = PembayaranModel(responseData)
+                if (response.code() == 200) {
+                    var responseData    = PembayaranStatus.valueOf(response.body()?.status.toString())
+                    result.value        = PembayaranModel(responseData)
+                }
             }
 
             override fun onFailure(call: Call<PembayaranResponse>, t: Throwable) {

@@ -20,7 +20,8 @@ class MenuRepository {
                 call: Call<MenuResponse>,
                 response: Response<MenuResponse>
             ) {
-                result.value = response.body()?.data?.toList()
+                if (response.code() == 200)
+                    result.value = response.body()?.data?.toList()
             }
 
             override fun onFailure(call: Call<MenuResponse>, t: Throwable) {
@@ -29,7 +30,6 @@ class MenuRepository {
             }
 
         })
-
         return result
     }
 }

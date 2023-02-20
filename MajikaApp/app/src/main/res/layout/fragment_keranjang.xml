@@ -15,7 +15,7 @@
         android:layout_marginEnd="32dp"
         app:layout_constraintBottom_toTopOf="@id/layout_total"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_keranjang">
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
-            android:text="Rp50.000"
+            android:text="Rp 0"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -69,6 +69,21 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/keranjangEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="352dp"
+        android:layout_marginEnd="93dp"
+        android:layout_marginBottom="266dp"
+        android:text="Tidak ada data keranjang"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/layout_total"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

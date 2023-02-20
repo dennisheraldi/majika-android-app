@@ -1,6 +1,7 @@
 package com.example.majikatubes1.ui.keranjang
 
 import android.annotation.SuppressLint
+import android.app.ActionBar.LayoutParams
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -18,6 +20,7 @@ import com.example.majikatubes1.data.keranjang.KeranjangRepository
 import com.example.majikatubes1.data.pembayaran.PembayaranStatus
 import com.example.majikatubes1.databinding.FragmentKeranjangBinding
 import com.example.majikatubes1.ui.pembayaran.PembayaranActivity
+import com.example.majikatubes1.utils.NumSperator
 import java.util.*
 
 
@@ -37,7 +40,7 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
         }.toString()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,18 +52,17 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
             @SuppressLint("SetTextI18n")
             override fun updateTotalTextView() {
                 val totalBayar : TextView = binding.keranjangTotalPrice
-                totalBayar.text = "Rp${
-                    keranjangAdapter.getKeranjangList()?.let {
-                        calculateTotalPrice(it)
-                    }.toString()
-                }".format(Locale.GERMAN)
-
+                totalBayar.text = keranjangAdapter.getKeranjangList()?.let {
+                    NumSperator(calculateTotalPrice(it)).parse()
+                }.toString().format(Locale.GERMAN)
             }
         })
 
         val keranjangViewModel = KeranjangViewModel(KeranjangRepository(requireContext()))
         val root: View = binding.root
         val recyclerView: RecyclerView = binding.recyclerListKeranjang
+        val keranjangEmpty: TextView = binding.keranjangEmpty
+        val totalBayarText: TextView = binding.keranjangTotal
         val totalBayar : TextView = binding.keranjangTotalPrice
         val buttonBayar : Button = binding.keranjangButtonBayar
 
@@ -75,7 +77,25 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
                 keranjangAdapter.setKeranjangList(it.toList())
                 keranjangAdapter.notifyDataSetChanged()
                 total           = calculateTotalPrice(it)
-                totalBayar.text = "Rp$total"
+
+                if (total > 0) {
+                    totalBayarText.visibility   = View.VISIBLE
+                    totalBayar.visibility       = View.VISIBLE
+                    buttonBayar.visibility      = View.VISIBLE
+                    keranjangEmpty.visibility   = View.GONE
+
+                    val numSperator = NumSperator(total)
+                    totalBayar.text = numSperator.parse()
+                } else {
+                    totalBayarText.visibility   = View.GONE
+                    totalBayar.visibility       = View.GONE
+                    buttonBayar.visibility      = View.GONE
+                    keranjangEmpty.visibility   = View.VISIBLE
+
+                    Toast.makeText(requireContext(),
+                        "Tidak ada data keranjang.",
+                        Toast.LENGTH_SHORT).show()
+                }
             }
 
             buttonBayar.setOnClickListener {
@@ -83,11 +103,6 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
                     val pembayaranActivityIntent = Intent(activity, PembayaranActivity::class.java)
                     pembayaranActivityIntent.putExtra("totalBayar", totalBayar.text)
                     activity?.startActivity(pembayaranActivityIntent)
-                } else {
-                    Toast.makeText(requireContext(),
-                        "Keranjang is empty.",
-                        Toast.LENGTH_SHORT).show()
-                    requireActivity().finish()
                 }
             }
         }

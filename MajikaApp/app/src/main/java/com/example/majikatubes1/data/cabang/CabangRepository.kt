@@ -20,7 +20,8 @@ class CabangRepository {
                 call: Call<CabangResponse>,
                 response: Response<CabangResponse>
             ) {
-                result.value = response.body()?.data?.toList()
+                if (response.code() == 200)
+                    result.value = response.body()?.data?.toList()
             }
 
             override fun onFailure(call: Call<CabangResponse>, t: Throwable) {
@@ -30,7 +31,7 @@ class CabangRepository {
 
 
         })
-
+        Log.v("TAG", result.toString())
         return result
     }
 }

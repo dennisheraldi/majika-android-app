@@ -6,7 +6,9 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.example.majikatubes1.MainActivity
@@ -29,7 +31,6 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
         binding = ActivityPembayaranBinding.inflate(layoutInflater)
 
-        hideStatusPembayaran()
         initScannerViewer()
         initView()
 
@@ -39,7 +40,73 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private fun initView() {
         val totalBayarText  = binding.TotalBayarText
         val totalBayar      = intent.getStringExtra("totalBayar").toString()
+        val actionBar       = supportActionBar
+
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+
+        title               = "Pembayaran"
         totalBayarText.text = "Total: $totalBayar"
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            this.finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun initScannerViewer() {
+        scannerViewer = ZXingScannerView(this)
+        scannerViewer!!.setAutoFocus(true)
+        scannerViewer!!.setResultHandler(this)
+        binding.ScannerViewer.addView(scannerViewer)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        doRequestPermission()
+        scannerViewer!!.startCamera()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        scannerViewer!!.stopCamera()
+    }
+
+     override fun handleResult (result: Result) {
+        val transactionId = result.text
+        val pembayaranViewModel = PembayaranViewModel()
+
+        pembayaranViewModel.getStatusPembayaran(transactionId)
+        pembayaranViewModel.statusPembayaran.observe(this,  androidx.lifecycle.Observer { result ->
+            var statusPembayaran = result.status
+            Log.v(TAG, statusPembayaran.toString())
+            var sudahBayar       = statusPembayaran == PembayaranStatus.SUCCESS
+
+            if (sudahBayar) {
+                scannerViewer!!.stopCamera()
+                showStatusPembayaran(sudahBayar)
+
+                val keranjangRepository = KeranjangRepository(this)
+                keranjangRepository.deleteAllKeranjang()
+
+                val countDown           = binding.countDown
+                countDown.visibility    = View.VISIBLE
+
+                object : CountDownTimer(6000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        countDown.text = "${millisUntilFinished/1000} second(s) to main"
+                    }
+
+                    override fun onFinish() {
+                        moveToMainActivity()
+                    }
+                }.start()
+            } else {
+                showStatusPembayaran(sudahBayar)
+                scannerViewer?.resumeCameraPreview(this)
+            }
+        })
     }
 
     private fun showStatusPembayaran(success: Boolean) {
@@ -59,63 +126,6 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
             statusPembayaranText1.text          = "Belum dibayar"
         }
         statusPembayaran.visibility = View.VISIBLE;
-    }
-
-    private fun hideStatusPembayaran() {
-        val statusPembayaran        = binding.StatusPembayaran
-        statusPembayaran.visibility = View.GONE;
-    }
-
-    private fun initScannerViewer() {
-        scannerViewer = ZXingScannerView(this)
-        scannerViewer!!.setAutoFocus(true)
-        scannerViewer!!.setResultHandler(this)
-        binding.ScannerViewer.addView(scannerViewer)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        doRequestPermission()
-        scannerViewer!!.startCamera()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        scannerViewer!!.startCamera()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        scannerViewer!!.stopCamera()
-    }
-
-     override fun handleResult (result: Result) {
-        var transactionId = result.text
-        val pembayaranViewModel = PembayaranViewModel()
-
-        pembayaranViewModel.getStatusPembayaran(transactionId)
-        pembayaranViewModel.statusPembayaran.observe(this,  androidx.lifecycle.Observer { result ->
-            var statusPembayaran = result.status
-            var sudahBayar       = statusPembayaran === PembayaranStatus.SUCCESS
-
-            var timer = Timer()
-
-            if (sudahBayar) {
-                scannerViewer!!.stopCamera()
-                showStatusPembayaran(sudahBayar)
-
-                var keranjangRepository = KeranjangRepository(this)
-                keranjangRepository.deleteAllKeranjang()
-
-                timer.schedule(5000) {
-                    moveToMainActivity()
-                }
-
-            } else {
-                showStatusPembayaran(sudahBayar)
-                scannerViewer?.resumeCameraPreview(this)
-            }
-        })
     }
 
     private fun moveToMainActivity() {
