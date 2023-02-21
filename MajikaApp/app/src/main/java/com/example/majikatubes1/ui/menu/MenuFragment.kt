@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat.getSystemService
@@ -62,6 +63,7 @@ class MenuFragment : Fragment(), SensorEventListener {
 
         val recyclerView: RecyclerView = binding.recyclerListMenu!!
         val searchView: SearchView = binding.fragmentMenuSearch!!
+        val menuEmpty: TextView = binding.menuEmpty!!
 
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
@@ -84,7 +86,6 @@ class MenuFragment : Fragment(), SensorEventListener {
                         menuAdapter.setMenuList(filteredData)
                         menuAdapter.notifyDataSetChanged()
                         menuItemSectionDecoration.setItemList(filteredData as MutableList<MenuModel>)
-
                     }
                 }
                 return true
@@ -93,7 +94,19 @@ class MenuFragment : Fragment(), SensorEventListener {
         })
 
         menuViewModel.menu.observe(viewLifecycleOwner){
-            if (it!=null){
+            if (it != null){
+                if (it.isNotEmpty()) {
+                    recyclerView.visibility = View.VISIBLE
+                    menuEmpty.visibility = View.GONE
+                } else {
+                    recyclerView.visibility = View.GONE
+                    menuEmpty.visibility = View.VISIBLE
+
+                    Toast.makeText(requireContext(),
+                        "Tidak ada data menu.",
+                        Toast.LENGTH_SHORT).show()
+                }
+
                 var data: List<MenuModel> = it.toList()
                 data = sortData(data)
                 menuAdapter.setMenuList(data)

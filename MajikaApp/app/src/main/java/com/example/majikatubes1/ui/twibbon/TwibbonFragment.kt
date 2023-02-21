@@ -1,6 +1,7 @@
 package com.example.majikatubes1.ui.twibbon
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Build
@@ -23,6 +24,8 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.ImageCaptureException
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.navigation.Navigation
 import com.example.majikatubes1.R
 
@@ -39,6 +42,14 @@ class TwibbonFragment : Fragment() {
     private var cameraProvider: ProcessCameraProvider? = null
 
     // Camera permission
+    private fun doRequestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.CAMERA), 100)
+            }
+        }
+    }
+
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             requireContext(), it) == PackageManager.PERMISSION_GRANTED
@@ -138,7 +149,7 @@ class TwibbonFragment : Fragment() {
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-
+        doRequestPermission()
         cameraProviderFuture.addListener({
             cameraProvider = cameraProviderFuture.get()
 

@@ -73,7 +73,32 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         scannerViewer!!.stopCamera()
     }
 
-     override fun handleResult (result: Result) {
+    private fun doRequestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.CAMERA), 100)
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 100)
+            initScannerViewer()
+        else {
+            Toast.makeText(this,
+                "Permissions not granted by the user.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+
+    override fun handleResult (result: Result) {
         val transactionId = result.text
         val pembayaranViewModel = PembayaranViewModel()
 
@@ -133,32 +158,6 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         this.startActivity(mainActivityIntent)
     }
 
-    private fun doRequestPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(Manifest.permission.CAMERA), 100)
-            }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode){
-            100 -> {
-                initScannerViewer()
-            } else -> {
-                Toast.makeText(this,
-                    "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                this.finish()
-            }
-        }
-    }
 
     companion object {
         private const val TAG = "majikatubes1"

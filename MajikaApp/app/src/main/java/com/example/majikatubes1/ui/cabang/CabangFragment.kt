@@ -1,10 +1,13 @@
 package com.example.majikatubes1.ui.cabang
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +36,7 @@ class CabangFragment : Fragment() {
         val cabangViewModel = ViewModelProvider(this)[CabangViewModel::class.java]
         val root: View = binding.root
         val recyclerView: RecyclerView = binding.recyclerListCabang
+        val cabangEmpty: TextView = binding.cabangEmpty
 
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         recyclerView.adapter = cabangAdapter
@@ -40,6 +44,18 @@ class CabangFragment : Fragment() {
         cabangViewModel.getCabang()
         cabangViewModel.cabang?.observe(viewLifecycleOwner) {
             if (it != null){
+                if (it.isNotEmpty()) {
+                    recyclerView.visibility = View.VISIBLE
+                    cabangEmpty.visibility = View.GONE
+                } else {
+                    recyclerView.visibility = View.GONE
+                    cabangEmpty.visibility = View.VISIBLE
+
+                    Toast.makeText(requireContext(),
+                        "Tidak ada data cabang.",
+                        Toast.LENGTH_SHORT).show()
+                }
+
                 cabangAdapter.setCabangList(it.toList())
                 cabangAdapter.notifyDataSetChanged()
             }

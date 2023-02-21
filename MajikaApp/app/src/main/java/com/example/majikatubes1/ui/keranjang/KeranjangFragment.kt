@@ -78,7 +78,7 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
                 keranjangAdapter.notifyDataSetChanged()
                 total           = calculateTotalPrice(it)
 
-                if (total > 0) {
+                if (it.isNotEmpty()) {
                     totalBayarText.visibility   = View.VISIBLE
                     totalBayar.visibility       = View.VISIBLE
                     buttonBayar.visibility      = View.VISIBLE
