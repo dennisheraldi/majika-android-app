@@ -85,8 +85,6 @@ class TwibbonFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        // Need to check first for permission before starting camera
-        // TO BE IMPLEMENTED
         startCamera()
 
         binding.photoResult.visibility = View.INVISIBLE
