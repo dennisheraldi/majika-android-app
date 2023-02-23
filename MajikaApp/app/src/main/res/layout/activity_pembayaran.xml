@@ -82,7 +82,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@drawable/ok" />
+            tools:srcCompat="@drawable/cancel" />
 
         <TextView
             android:id="@+id/StatusPembayaranText"
@@ -98,14 +98,13 @@
 
         <TextView
             android:id="@+id/StatusPembayaranText1"
-            android:layout_width="104dp"
+            android:layout_width="148dp"
             android:layout_height="19dp"
             android:layout_marginStart="12dp"
-            android:layout_marginEnd="34dp"
-            android:text="Sudah dibayar"
+            android:layout_marginEnd="9dp"
+            android:text="QR Kadaluarsa"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/GambarStatusPembayaran"
             app:layout_constraintTop_toBottomOf="@+id/StatusPembayaranText" />
     </androidx.constraintlayout.widget.ConstraintLayout>

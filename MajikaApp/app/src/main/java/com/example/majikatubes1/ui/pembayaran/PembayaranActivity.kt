@@ -7,7 +7,6 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -16,11 +15,8 @@ import com.example.majikatubes1.R
 import com.example.majikatubes1.data.keranjang.KeranjangRepository
 import com.example.majikatubes1.data.pembayaran.PembayaranStatus
 import com.example.majikatubes1.databinding.ActivityPembayaranBinding
-import com.example.majikatubes1.ui.keranjang.KeranjangFragment
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import com.google.zxing.Result
-import java.util.*
-import kotlin.concurrent.schedule
 
 class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
@@ -87,9 +83,10 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 100)
+        if (requestCode == 100) {
             initScannerViewer()
-        else {
+            scannerViewer!!.startCamera()
+        } else {
             Toast.makeText(this,
                 "Permissions not granted by the user.",
                 Toast.LENGTH_SHORT
@@ -105,12 +102,11 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         pembayaranViewModel.getStatusPembayaran(transactionId)
         pembayaranViewModel.statusPembayaran.observe(this,  androidx.lifecycle.Observer { result ->
             var statusPembayaran = result.status
-            Log.v(TAG, statusPembayaran.toString())
-            var sudahBayar       = statusPembayaran == PembayaranStatus.SUCCESS
 
-            if (sudahBayar) {
+            showStatusPembayaran(statusPembayaran)
+
+            if (statusPembayaran == PembayaranStatus.SUCCESS) {
                 scannerViewer!!.stopCamera()
-                showStatusPembayaran(sudahBayar)
 
                 val keranjangRepository = KeranjangRepository(this)
                 keranjangRepository.deleteAllKeranjang()
@@ -128,19 +124,18 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                     }
                 }.start()
             } else {
-                showStatusPembayaran(sudahBayar)
                 scannerViewer?.resumeCameraPreview(this)
             }
         })
     }
 
-    private fun showStatusPembayaran(success: Boolean) {
+    private fun showStatusPembayaran(status: PembayaranStatus) {
         val gambarStatusPembayaran  = binding.GambarStatusPembayaran
         val statusPembayaranText    = binding.StatusPembayaranText
         val statusPembayaranText1   = binding.StatusPembayaranText1
         val statusPembayaran        = binding.StatusPembayaran
 
-        if (success) {
+        if (status == PembayaranStatus.SUCCESS) {
             gambarStatusPembayaran.setBackgroundResource(R.drawable.ok)
             statusPembayaranText.text           = "Berhasil"
             statusPembayaranText1.text          = "Sudah dibayar"
@@ -148,7 +143,7 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         } else {
             gambarStatusPembayaran.setBackgroundResource(R.drawable.cancel)
             statusPembayaranText.text           = "Gagal"
-            statusPembayaranText1.text          = "Belum dibayar"
+            statusPembayaranText1.text          = if (status == PembayaranStatus.FAILED) "Belum dibayar" else "QR kedaluwarsa"
         }
         statusPembayaran.visibility = View.VISIBLE;
     }
@@ -157,7 +152,6 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         var mainActivityIntent  = Intent(this, MainActivity::class.java)
         this.startActivity(mainActivityIntent)
     }
-
 
     companion object {
         private const val TAG = "majikatubes1"

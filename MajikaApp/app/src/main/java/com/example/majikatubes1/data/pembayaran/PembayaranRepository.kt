@@ -22,6 +22,8 @@ class PembayaranRepository {
                 if (response.code() == 200) {
                     var responseData    = PembayaranStatus.valueOf(response.body()?.status.toString())
                     result.value        = PembayaranModel(responseData)
+                } else {
+                    result.value        = PembayaranModel(PembayaranStatus.EXPIRED)
                 }
             }
 
