@@ -16,7 +16,7 @@ Fitur ini memanfaatkan API Majika untuk menampilkan daftar cabang. Terdapat tomb
 Pengguna dapat menggunakan kameranya dan menangkap foto untuk membuat gambar Twibbon. Foto yang berhasil ditangkap dapat kembali diulang jika pengguna menginginkan. 
 
 
-## Libray yang Digunakan
+## Library yang Digunakan
 1. Retrofit
 2. Room
 3. ZXing Barcode Scanner
