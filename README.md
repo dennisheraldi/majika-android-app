@@ -32,8 +32,8 @@ Pengguna dapat menggunakan kameranya dan menangkap foto untuk membuat gambar Twi
 ## Pembagian Kerja Anggota Kelompok Beserta Jam Persiapan dan Pengerjaan
 | Nama | NIM | Pekerjaan | Jam Persiapan dan Pengerjaan |
 | - | - | - | - | 
-| Timothy Stanley Setiawan | 13520028 | Implementasi Fitur Pembayaran, Utilisasi Fitur Keranjang, Error Handling  | 50 Jam |
-| Adzka Ahmadetya Zaidan | 13520127 |  Implementasi Fitur Twibbon, Splash Screen, Utilisasi UX | 50 Jam |
-| Fachry Dennis Heraldi | 13520139 | Implementasi Fitur Daftar Menu, Daftar Cabang, Daftar Keranjang  | 50 Jam |
+| Timothy Stanley Setiawan | 13520028 | Implementasi Fitur Pembayaran, Utilisasi Fitur Keranjang, Error Handling  | 40 Jam |
+| Adzka Ahmadetya Zaidan | 13520127 |  Implementasi Fitur Twibbon, Splash Screen, Utilisasi UX | 40 Jam |
+| Fachry Dennis Heraldi | 13520139 | Implementasi Fitur Daftar Menu, Daftar Cabang, Daftar Keranjang  | 40 Jam |
 
 
