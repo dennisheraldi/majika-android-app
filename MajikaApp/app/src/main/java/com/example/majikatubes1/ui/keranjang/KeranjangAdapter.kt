@@ -83,8 +83,9 @@ class KeranjangAdapter(private val cartupdatecallback: cartUpdateCallback): Recy
                 setKeranjangList(keranjangRepository?.getAllKeranjang()?.value)
                 cartupdatecallback.updateTotalTextView()
             } else {
-                holder.keranjangCounter.text = keranjangData.quantity.toString()
                 keranjangRepository?.updateKeranjang(keranjangData)
+                holder.keranjangCounter.text = keranjangData.quantity.toString()
+                setKeranjangList(keranjangRepository?.getAllKeranjang()?.value)
                 cartupdatecallback.updateTotalTextView()
             }
             notifyDataSetChanged()

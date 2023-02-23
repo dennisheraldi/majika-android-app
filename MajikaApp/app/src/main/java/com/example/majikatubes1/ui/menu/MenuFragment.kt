@@ -55,7 +55,7 @@ class MenuFragment : Fragment(), SensorEventListener {
 
         tempSensor ?: run {
             // If the device has no temp sensor
-            Toast.makeText(this.context, "Sensor suhu saat ini tidak tersedia", Toast.LENGTH_SHORT).show()
+            // Toast.makeText(this.context, "Sensor suhu saat ini tidak tersedia", Toast.LENGTH_SHORT).show()
         }
 
         val menuViewModel = ViewModelProvider(this)[MenuViewModel::class.java]
