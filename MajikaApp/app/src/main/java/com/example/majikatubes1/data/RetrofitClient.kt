@@ -13,7 +13,7 @@ class RetrofitClient {
             retrofit = Retrofit.Builder()
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://192.168.18.7:3000/v1/")
+                .baseUrl("https://majika.reon.my.id/v1/")
                 .build()
         }
         return retrofit
