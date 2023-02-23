@@ -120,6 +120,9 @@ class MenuFragment : Fragment(), SensorEventListener {
 
     fun filterData(data: List<MenuModel>, query : String?) : List<MenuModel>{
         val filteredData = ArrayList<MenuModel>()
+        val recyclerView: RecyclerView = binding.recyclerListMenu!!
+        val menuEmpty: TextView = binding.menuEmpty!!
+
         if (query != null){
             for (i in data){
                if (i.name.lowercase(Locale.ROOT).contains(query)){
@@ -127,8 +130,12 @@ class MenuFragment : Fragment(), SensorEventListener {
                }
             }
             if (filteredData.isEmpty()){
+                recyclerView.visibility = View.GONE
+                menuEmpty.visibility = View.VISIBLE
                 Toast.makeText(this.context, "Makanan atau minuman tidak ditemukan", Toast.LENGTH_SHORT).show()
             } else {
+                recyclerView.visibility = View.VISIBLE
+                menuEmpty.visibility = View.GONE
                 return filteredData.toList()
             }
         }

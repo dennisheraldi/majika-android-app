@@ -70,10 +70,8 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     }
 
     private fun doRequestPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(Manifest.permission.CAMERA), 100)
-            }
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
     }
 
@@ -101,32 +99,33 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
         pembayaranViewModel.getStatusPembayaran(transactionId)
         pembayaranViewModel.statusPembayaran.observe(this,  androidx.lifecycle.Observer { result ->
-            var statusPembayaran = result.status
+            if (result != null) {
+                var statusPembayaran = result.status
 
-            showStatusPembayaran(statusPembayaran)
+                showStatusPembayaran(statusPembayaran)
 
-            if (statusPembayaran == PembayaranStatus.SUCCESS) {
-                scannerViewer!!.stopCamera()
+                if (statusPembayaran == PembayaranStatus.SUCCESS) {
+                    scannerViewer!!.stopCamera()
 
-                val keranjangRepository = KeranjangRepository(this)
-                keranjangRepository.deleteAllKeranjang()
+                    val keranjangRepository = KeranjangRepository(this)
+                    keranjangRepository.deleteAllKeranjang()
 
-                val countDown           = binding.countDown
-                countDown.visibility    = View.VISIBLE
+                    val countDown           = binding.countDown
+                    countDown.visibility    = View.VISIBLE
 
-                object : CountDownTimer(6000, 1000) {
-                    override fun onTick(millisUntilFinished: Long) {
-                        countDown.text = "${millisUntilFinished/1000} second(s) to main"
-                    }
+                    object : CountDownTimer(6000, 1000) {
+                        override fun onTick(millisUntilFinished: Long) {
+                            countDown.text = "${millisUntilFinished/1000} second(s) to main"
+                        }
 
-                    override fun onFinish() {
-                        moveToMainActivity()
-                    }
-                }.start()
-            } else {
-                scannerViewer?.resumeCameraPreview(this)
+                        override fun onFinish() {
+                            moveToMainActivity()
+                        }
+                    }.start()
+                }
             }
         })
+        scannerViewer?.resumeCameraPreview(this)
     }
 
     private fun showStatusPembayaran(status: PembayaranStatus) {
@@ -155,7 +154,7 @@ class PembayaranActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     companion object {
         private const val TAG = "majikatubes1"
-        private const val REQUEST_CODE_PERMISSIONS = 10
+        private const val REQUEST_CODE_PERMISSIONS = 100
         private val REQUIRED_PERMISSIONS = mutableListOf(
             Manifest.permission.CAMERA,
         ).apply {

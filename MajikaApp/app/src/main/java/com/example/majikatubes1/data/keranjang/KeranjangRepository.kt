@@ -1,10 +1,8 @@
 package com.example.majikatubes1.data.keranjang
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
-import com.example.majikatubes1.data.menu.MenuModel
 
 class KeranjangRepository(context: Context) {
     private val db = Room.databaseBuilder(
@@ -56,8 +54,6 @@ class KeranjangRepository(context: Context) {
             for (keranjang in keranjangData) {
                 deleteKeranjang(keranjang)
             }
-        } else {
-            Log.v("Tag", "null")
         }
     }
 
