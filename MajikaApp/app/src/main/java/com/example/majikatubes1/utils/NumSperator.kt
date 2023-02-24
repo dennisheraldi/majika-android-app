@@ -4,6 +4,9 @@ class NumSperator(_num : Int) {
     private var num = _num
 
     fun parse() : String {
+        if (num == 0) {
+            return "Rp. 0"
+        }
         var str     = ""
         while (num > 0) {
             if (num < 1000) {
@@ -15,7 +18,7 @@ class NumSperator(_num : Int) {
             }
             num /= 1000
         }
-        str = "Rp$str"
+        str = "Rp. $str"
         return str
     }
 }

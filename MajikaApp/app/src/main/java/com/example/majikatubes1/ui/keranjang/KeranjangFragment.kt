@@ -34,10 +34,7 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
 
 
     override fun updateTotalTextView(){
-        val totalBayar : TextView = binding.keranjangTotalPrice
-        totalBayar.text = keranjangAdapter.getKeranjangList()?.let {
-            calculateTotalPrice(it)
-        }.toString()
+
     }
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
@@ -53,7 +50,29 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
             override fun updateTotalTextView() {
                 val totalBayar : TextView = binding.keranjangTotalPrice
                 totalBayar.text = keranjangAdapter.getKeranjangList()?.let {
-                    NumSperator(calculateTotalPrice(it)).parse()
+                    val total = calculateTotalPrice(it)
+
+                    val buttonBayar = binding.keranjangButtonBayar
+                    val keranjangEmpty: TextView = binding.keranjangEmpty
+                    val totalBayarText: TextView = binding.keranjangTotal
+                    val totalBayar : TextView = binding.keranjangTotalPrice
+
+                    if (total == 0) {
+                        totalBayarText.visibility   = View.GONE
+                        totalBayar.visibility       = View.GONE
+                        buttonBayar.visibility      = View.GONE
+                        keranjangEmpty.visibility   = View.VISIBLE
+
+                        Toast.makeText(requireContext(),
+                            "Keranjang kosong.",
+                            Toast.LENGTH_SHORT).show()
+                    } else {
+                        totalBayarText.visibility   = View.VISIBLE
+                        totalBayar.visibility       = View.VISIBLE
+                        buttonBayar.visibility      = View.VISIBLE
+                        keranjangEmpty.visibility   = View.GONE
+                    }
+                    NumSperator(total).parse()
                 }.toString().format(Locale.GERMAN)
             }
         })
@@ -93,7 +112,7 @@ class KeranjangFragment : Fragment(), KeranjangAdapter.cartUpdateCallback {
                     keranjangEmpty.visibility   = View.VISIBLE
 
                     Toast.makeText(requireContext(),
-                        "Tidak ada data keranjang.",
+                        "Keranjang kosong.",
                         Toast.LENGTH_SHORT).show()
                 }
             }
