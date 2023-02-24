@@ -72,7 +72,7 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
         holder.menuTerjual.text = "Terjual ${menuData.sold}"
         holder.menuDeskripsi.text = menuData.description
 
-        var keranjangData : KeranjangModel? = keranjangRepository?.getAllKeranjang()?.value?.find { it.name == menuData.name }
+        var keranjangData : KeranjangModel? = keranjangRepository?.getAllKeranjang()?.value?.find { it.name == menuData.name && it.price ==menuData.price }
 
         keranjangData?.let {
             holder.menuTambah.visibility = GONE
@@ -81,7 +81,7 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
             holder.menuCounter.text = keranjangData!!.quantity.toString()
 
             holder.menuPlus.setOnClickListener {
-                keranjangData = keranjangRepository?.getAllKeranjang()?.value?.find { it.name == menuData.name }
+                keranjangData = keranjangRepository?.getAllKeranjang()?.value?.find { it.name == menuData.name && it.price ==menuData.price}
                 keranjangData?.quantity = keranjangData?.quantity?.plus(1)!!
                 holder.menuCounter.text = keranjangData!!.quantity.toString()
                 keranjangRepository?.updateKeranjang(keranjangData!!)
@@ -89,7 +89,7 @@ class MenuAdapter : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
             }
 
             holder.menuMinus.setOnClickListener {
-                keranjangData  = keranjangRepository?.getAllKeranjang()?.value?.find { it.name == menuData.name }
+                keranjangData  = keranjangRepository?.getAllKeranjang()?.value?.find { it.name == menuData.name && it.price ==menuData.price }
                 keranjangData?.quantity = keranjangData?.quantity?.minus(1)!!
                 if (keranjangData?.quantity == 0){
                     keranjangRepository?.deleteKeranjang(keranjangData!!)
