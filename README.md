@@ -20,6 +20,7 @@ Pengguna dapat menggunakan kameranya dan menangkap foto untuk membuat gambar Twi
 1. Retrofit
 2. Room
 3. ZXing Barcode Scanner
+4. CameraX
 
 
 ## Screenshot aplikasi
