@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.majikatubes1.R
 import com.example.majikatubes1.data.keranjang.KeranjangModel
 import com.example.majikatubes1.data.keranjang.KeranjangRepository
+import com.example.majikatubes1.data.menu.MenuRepository
 import com.example.majikatubes1.utils.NumSperator
 import org.w3c.dom.Text
 
@@ -21,6 +22,7 @@ class KeranjangAdapter(private val cartupdatecallback: cartUpdateCallback): Recy
     private var keranjangList: List<KeranjangModel>? = null
     private var context: Context? = null
     private var keranjangRepository: KeranjangRepository? = null
+    private var menuRepository: MenuRepository? = null
 
     interface cartUpdateCallback{
         fun updateTotalTextView()
