@@ -125,7 +125,11 @@ class MenuFragment : Fragment(), SensorEventListener {
 
         if (query != null){
             for (i in data){
-               if (i.name.lowercase(Locale.ROOT).contains(query)){
+               if (i.name.lowercase(Locale.ROOT).contains(query.lowercase(Locale.ROOT)) ||
+                   i.type.lowercase(Locale.ROOT).contains(query.lowercase(Locale.ROOT)) ||
+                   i.description.lowercase(Locale.ROOT).contains(query.lowercase(Locale.ROOT)) ||
+                   i.price.toString().contains(query) || i.sold.toString().contains(query)
+               ){
                    filteredData.add(i)
                }
             }

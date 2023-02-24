@@ -39,7 +39,7 @@
             android:background="@color/serenade"
             app:iconifiedByDefault="false"
             app:queryBackground="@android:color/transparent"
-            app:queryHint="Cari Makanan" />
+            app:queryHint="Cari menu" />
 
     </com.google.android.material.card.MaterialCardView>
 

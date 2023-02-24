@@ -18,7 +18,7 @@ class NumSperator(_num : Int) {
             }
             num /= 1000
         }
-        str = "Rp. $str"
+        str = "Rp$str"
         return str
     }
 }
